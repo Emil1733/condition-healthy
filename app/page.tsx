@@ -1,65 +1,81 @@
-import Image from "next/image";
+
+import Link from "next/link";
+import { Search, MapPin, Activity } from "lucide-react";
+import TrustBar from "@/components/TrustBar";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white -z-10" />
+        
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
+            Find <span className="text-blue-700">Clinical Trials</span> Near You.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+             Get access to advanced medical treatments and earn compensation up to $1,200/visit. No insurance required.
           </p>
+
+          {/* Search Bar Visual */}
+          <div className="bg-white p-2 rounded-2xl shadow-xl border border-gray-100 max-w-xl mx-auto flex items-center gap-2 mb-12 transform hover:scale-[1.01] transition-all">
+             <MapPin className="w-6 h-6 text-gray-400 ml-4" />
+             <input 
+                type="text" 
+                placeholder="Enter your Zip Code (e.g., 78701)" 
+                className="flex-1 p-3 outline-none text-gray-700 font-medium placeholder-gray-400"
+             />
+             <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-all">
+                Search
+             </button>
+          </div>
+          
+          <TrustBar />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Popular locations (For Testing) */}
+      <section className="py-20 max-w-6xl mx-auto px-4">
+         <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900">Popular Research Studies</h2>
+            <p className="text-gray-500">Select a location to see active trials</p>
+         </div>
+
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Direct Links to our pSEO engine */}
+            <Link href="/trials/psoriasis/austin-tx" className="group block">
+                <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
+                    <div className="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-100">
+                        <Activity className="text-blue-600 w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-700">Psoriasis in Austin</h3>
+                    <p className="text-sm text-gray-500">Recruiting • Up to $1,200</p>
+                </div>
+            </Link>
+
+            <Link href="/trials/diabetes/houston-tx" className="group block">
+                <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
+                    <div className="bg-green-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-100">
+                        <Activity className="text-green-600 w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-green-700">Diabetes in Houston</h3>
+                    <p className="text-sm text-gray-500">Recruiting • Up to $2,500</p>
+                </div>
+            </Link>
+
+            <Link href="/trials/migraine/dallas-tx" className="group block">
+                <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
+                    <div className="bg-purple-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-100">
+                        <Activity className="text-purple-600 w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-purple-700">Migraine in Dallas</h3>
+                    <p className="text-sm text-gray-500">Recruiting • Up to $800</p>
+                </div>
+            </Link>
+         </div>
+      </section>
+
+    </main>
   );
 }
