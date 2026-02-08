@@ -22,7 +22,14 @@ const CONDITIONS = [
 
 import Script from "next/script";
 
-export default function TrialsDirectoryPage() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function TrialsDirectoryPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const locationQuery = typeof searchParams.location === 'string' ? searchParams.location : '';
+
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
       {/* Breadcrumb Schema */}
@@ -62,10 +69,20 @@ export default function TrialsDirectoryPage() {
                 2026 Clinical Research Directory
               </div>
               <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6">
-                Browse Trials by <span className="text-blue-600">Medical Condition</span>
+                 {locationQuery ? (
+                    <>
+                      Clinical Trials in <span className="text-blue-600 capitalize">{locationQuery}</span>
+                    </>
+                 ) : (
+                    <>
+                      Browse Trials by <span className="text-blue-600">Medical Condition</span>
+                    </>
+                 )}
               </h1>
               <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                Find the right clinical study for your needs. Browse our categorical directory to find local treatments, expert care, and compensation near you.
+                {locationQuery 
+                  ? `Showing available research studies near ${locationQuery}. Select a condition below to see specific opportunities.` 
+                  : "Find the right clinical study for your needs. Browse our categorical directory to find local treatments, expert care, and compensation near you."}
               </p>
             </div>
         </div>
@@ -77,7 +94,7 @@ export default function TrialsDirectoryPage() {
           {CONDITIONS.map((cond) => (
             <Link 
               key={cond.slug}
-              href={`/trials/${cond.slug}`}
+              href={locationQuery ? `/trials/${cond.slug}/${locationQuery.toLowerCase().replace(/ /g, '-')}` : `/trials/${cond.slug}`}
               className="group bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-xl transition-all relative overflow-hidden"
             >
               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50/50 to-transparent rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform`} />
@@ -88,11 +105,11 @@ export default function TrialsDirectoryPage() {
                 </div>
                 
                 <h2 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
-                  {cond.name}
+                  {cond.name} {locationQuery ? `in ${locationQuery}` : ''}
                 </h2>
                 
                 <p className="text-gray-500 mb-6 text-sm leading-relaxed">
-                  Join advanced {cond.name} research studies. Access new treatments and earn compensation up to $1,500.
+                  Join advanced {cond.name} research studies{locationQuery ? ` near ${locationQuery}` : ''}. Access new treatments and earn compensation up to $1,500.
                 </p>
 
                 <div className="flex items-center justify-between pt-6 border-t border-gray-50">
