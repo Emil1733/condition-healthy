@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
@@ -137,7 +138,9 @@ export default function RootLayout({
                 </div>
             </div>
         </footer>
-        <GlobalModalManager />
+        <Suspense fallback={null}>
+          <GlobalModalManager />
+        </Suspense>
       </body>
     </html>
   );
