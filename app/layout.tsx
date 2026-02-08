@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import GlobalModalManager from "@/components/GlobalModalManager";
 
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -19,6 +20,9 @@ export const metadata: Metadata = {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
     apple: "/icon.svg",
+  },
+  verification: {
+    google: "fwaLfQ5e7EPKJWcsStsdpSev9YQhWPmqwUDyKQg8EvM",
   },
 };
 
@@ -126,7 +130,6 @@ export default function RootLayout({
                             © {new Date().getFullYear()} ConditionHealthy Research Network. All rights reserved worldwide.
                         </p>
                         <div className="flex items-center gap-6 opacity-50 grayscale hover:grayscale-0 transition-all">
-                             {/* Trust logos placeholders could go here */}
                              <span className="text-[10px] font-bold tracking-widest text-gray-400 border border-gray-700 px-2 py-1 rounded">SSL ENCRYPTED</span>
                              <span className="text-[10px] font-bold tracking-widest text-gray-400 border border-gray-700 px-2 py-1 rounded">HIPAA COMPLIANT</span>
                         </div>
@@ -134,6 +137,7 @@ export default function RootLayout({
                 </div>
             </div>
         </footer>
+        <GlobalModalManager />
       </body>
     </html>
   );
