@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Activity, MapPin, ChevronRight, ShieldCheck } from "lucide-react";
 import Script from "next/script";
+import StudyCard from "@/components/StudyCard";
 
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -146,41 +147,66 @@ export default async function ConditionHubPage(props: PageProps) {
         </div>
       </section>
 
+
+import StudyCard from "@/components/StudyCard";
+
+// ... imports
+
+// ... inside ConditionHubPage ...
+
+  // 1. Fetch cities (existing logic) ...
+
+  // 2. Fetch Nationwide Studies (Showcase)
+  const { data: nationwideStudies } = await supabase
+    .from("studies")
+    .select("*")
+    .ilike("condition", `%${condition}%`)
+    .eq("status", "Recruiting")
+    .limit(6);
+
+  // ... city grouping logic ...
+
+  return (
+    <main className="min-h-screen bg-gray-50 pb-20">
+       {/* ... existing sections ... */}
+
       {/* City Directory */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">
-            Research Centers in {formattedCondition} High-Opportunity Areas
-         </h2>
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedCities.map((item) => {
-              const citySlug = `${item.city.toLowerCase().replace(/ /g, "-")}-${item.state.toLowerCase()}`;
-              return (
-                <Link 
-                   key={citySlug}
-                   href={`/trials/${condition}/${citySlug}`}
-                   className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all flex items-center justify-between"
-                >
-                    <div className="flex items-center gap-4">
-                        <div className="bg-gray-50 p-3 rounded-xl group-hover:bg-blue-50 transition-colors">
-                            <MapPin className="w-6 h-6 text-gray-400 group-hover:text-blue-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-gray-900 group-hover:text-blue-700 transition-colors">
-                                {item.city} {formattedCondition} Trials
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                                {item.state} • {item.count} Active {item.count === 1 ? 'Trial' : 'Trials'}
-                            </p>
-                        </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
-                </Link>
-              );
-            })}
+         {/* ... (Existing City Grid) ... */}
+         
+         {/* NEW: Nationwide Studies Grid */}
+         <div className="mt-24 pt-16 border-t border-gray-200">
+            <div className="text-center mb-12">
+               <span className="text-blue-600 font-bold tracking-wider uppercase text-xs mb-2 block">
+                  Nationwide Opportunities
+               </span>
+               <h2 className="text-3xl font-extrabold text-gray-900">
+                  Featured {formattedCondition} Studies
+               </h2>
+               <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+                  Can't find your city above? These active clinical trials are recruiting participants from across the United States.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {nationwideStudies?.map((study) => (
+                   <StudyCard 
+                      key={study.nct_id}
+                      nctId={study.nct_id}
+                      title={study.title}
+                      status={study.status}
+                      condition={study.condition}
+                      city={study.location_city}
+                      state={study.location_state}
+                      showLocation={true}
+                   />
+                ))}
+            </div>
          </div>
 
          {/* Trust Footer */}
          <div className="mt-20 flex flex-col items-center">
+    {/* ... */}
             <div className="flex items-center gap-12 opacity-40 grayscale filter hover:grayscale-0 transition-all">
                 {/* Placeholders for partner logos */}
                 <div className="text-xs font-bold uppercase tracking-widest text-gray-400">NIH Data Verified</div>
