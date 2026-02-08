@@ -30,11 +30,9 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex">
-                <Link href="/" className="flex-shrink-0 flex items-center gap-2 hover:opacity-90 transition-opacity">
-                  <div className="bg-blue-600 p-1.5 rounded-lg">
-                    <ShieldCheck className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="font-bold text-xl text-gray-900 tracking-tight">Condition<span className="text-blue-600">Healthy</span></span>
+                <Link href="/" className="flex-shrink-0 flex items-center gap-1 hover:opacity-90 transition-opacity">
+                  <span className="font-extrabold text-2xl text-gray-900 tracking-tight font-sans">Condition</span>
+                  <span className="font-light text-2xl text-blue-600 tracking-widest uppercase ml-1 font-sans">Healthy</span>
                 </Link>
               </div>
               <div className="flex items-center gap-6">
