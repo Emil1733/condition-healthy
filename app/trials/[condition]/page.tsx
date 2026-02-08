@@ -36,7 +36,7 @@ export default async function ConditionHubPage(props: PageProps) {
     .from("studies")
     .select("location_city, location_state")
     .ilike("condition", `%${condition}%`)
-    .eq("status", "Recruiting");
+    .ilike("status", "recruiting");
 
   if (error || !cityData) {
     return notFound();
@@ -47,7 +47,7 @@ export default async function ConditionHubPage(props: PageProps) {
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition}%`)
-    .eq("status", "Recruiting")
+    .ilike("status", "recruiting")
     .limit(6);
 
   // 3. Group and Count trials per city

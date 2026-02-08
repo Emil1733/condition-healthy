@@ -44,7 +44,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
       .from("studies")
       .select("*", { count: 'exact', head: true })
       .ilike("condition", `%${slug}%`)
-      .eq("status", "Recruiting");
+      .ilike("status", "recruiting");
     
     return {
       slug,
