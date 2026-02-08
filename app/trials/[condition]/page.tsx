@@ -36,8 +36,7 @@ export default async function ConditionHubPage(props: PageProps) {
     .from("studies")
     .select("location_city, location_state")
     .ilike("condition", `%${condition}%`)
-    .ilike("status", "recruiting")
-    .eq("location_country", "United States");
+    .ilike("status", "recruiting");
 
   if (error || !cityData) {
     return notFound();

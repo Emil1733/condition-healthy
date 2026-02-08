@@ -44,8 +44,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
       .from("studies")
       .select("*", { count: 'exact', head: true })
       .ilike("condition", `%${slug}%`)
-      .ilike("status", "recruiting")
-      .eq("location_country", "United States");
+      .ilike("status", "recruiting");
     
     return {
       slug,
