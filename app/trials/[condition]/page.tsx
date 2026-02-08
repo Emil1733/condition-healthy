@@ -140,7 +140,7 @@ export default async function ConditionHubPage(props: PageProps) {
                     <span className="text-blue-600">Browse by Location</span>
                 </h1>
                 <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                    Connect with leading research facilities conducting ${formattedCondition} studies. Select your city below to view local eligibility requirements, compensation details, and available treatments.
+                    Connect with leading research facilities conducting {formattedCondition} studies. Select your city below to view local eligibility requirements, compensation details, and available treatments.
                 </p>
             </div>
         </div>
