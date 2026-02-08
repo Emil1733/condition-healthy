@@ -32,7 +32,7 @@ export default function Home() {
 
 
 
-// ... inside the component ...
+
           {/* Search Bar Visual */}
           <HeroSearch />
           
