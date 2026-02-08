@@ -1,0 +1,5 @@
+[2026-02-08T13:04:42.125Z] Checking Supabase for 3 specific international IDs...
+[2026-02-08T13:04:43.050Z] Found 2 / 3 records.
+[2026-02-08T13:04:43.050Z] WARNING: Some IDs still exist:
+[2026-02-08T13:04:43.051Z]   - FOUND: 8c74c5a0-d076-4d35-a1eb-756dd36c56d5 (Taichung, Taiwan)
+[2026-02-08T13:04:43.051Z]   - FOUND: 9e6b601f-d18b-4a19-b3e9-da1a05afb16a (Amsterdam, North Holland)

@@ -1,0 +1,13 @@
+[2026-02-08T13:05:33.408Z] Starting Force Clean Script...
+[2026-02-08T13:05:33.461Z] Fetching ALL trials via pagination...
+[2026-02-08T13:05:34.386Z] Fetched page 1, total so far: 686
+[2026-02-08T13:05:34.645Z] Total trials analyzed: 686
+[2026-02-08T13:05:34.646Z] DEBUG: Target ID 9e6b601f-d18b-4a19-b3e9-da1a05afb16a found. State: "North Holland"
+[2026-02-08T13:05:34.646Z] DEBUG: Target ID 9e6b601f-d18b-4a19-b3e9-da1a05afb16a added to DELETE list.
+[2026-02-08T13:05:34.646Z] DEBUG: Target ID 8c74c5a0-d076-4d35-a1eb-756dd36c56d5 found. State: "Taiwan"
+[2026-02-08T13:05:34.646Z] DEBUG: Target ID 8c74c5a0-d076-4d35-a1eb-756dd36c56d5 added to DELETE list.
+[2026-02-08T13:05:34.647Z] 
+Identified 516 trials to DELETE.
+[2026-02-08T13:05:34.647Z] Identified 170 trials to KEEP (US Only).
+[2026-02-08T13:05:34.647Z] Deleting in batches of 100...
+[2026-02-08T13:05:36.522Z] Successfully deleted 516 trials.

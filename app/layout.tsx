@@ -76,8 +76,8 @@ export default function RootLayout({
                         <ul className="space-y-3 text-sm">
                             <li><Link href="/medical-review" className="hover:text-blue-400 transition">Medical Review Process</Link></li>
                             <li><Link href="/editorial" className="hover:text-blue-400 transition">Editorial Standards</Link></li>
-                            <li><Link href="/" rel="nofollow" className="hover:text-blue-400 transition">Fact-Checking Policy</Link></li>
-                            <li><Link href="/" rel="nofollow" className="hover:text-blue-400 transition">Advertising Disclosure</Link></li>
+                            <li><Link href="/fact-checking" className="hover:text-blue-400 transition">Fact-Checking Policy</Link></li>
+                            <li><Link href="/advertising-disclosure" className="hover:text-blue-400 transition">Advertising Disclosure</Link></li>
                         </ul>
                     </div>
 
@@ -86,9 +86,9 @@ export default function RootLayout({
                         <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Compliance</h4>
                         <ul className="space-y-3 text-sm">
                             <li><Link href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</Link></li>
-                            <li><Link href="/privacy" className="hover:text-blue-400 transition">Terms of Service</Link></li>
-                            <li><Link href="/privacy" className="hover:text-blue-400 transition">HIPAA Compliance</Link></li>
-                            <li><Link href="/editorial" className="hover:text-blue-400 transition">Accessibility Statement</Link></li>
+                            <li><Link href="/terms" className="hover:text-blue-400 transition">Terms of Service</Link></li>
+                            <li><Link href="/hipaa-compliance" className="hover:text-blue-400 transition">HIPAA Compliance</Link></li>
+                            <li><Link href="/accessibility" className="hover:text-blue-400 transition">Accessibility Statement</Link></li>
                         </ul>
                     </div>
 

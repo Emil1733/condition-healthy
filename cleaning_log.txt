@@ -1,0 +1,17 @@
+[2026-02-08T13:00:14.948Z] Starting Cleaning Script...
+[2026-02-08T13:00:15.024Z] Fetching all study IDs and States...
+[2026-02-08T13:00:15.718Z] Analyzing 1000 trials...
+[2026-02-08T13:00:15.865Z] Found 893 NON-US trials (or invalid states).
+[2026-02-08T13:00:15.958Z] First 10 to delete:
+[2026-02-08T13:00:15.964Z]   - null, null (ID: f10ef27b-4ec2-4809-bba2-b727e9080577)
+[2026-02-08T13:00:15.965Z]   - null, null (ID: 041dc008-536e-4c5b-8583-82eab4d71c89)
+[2026-02-08T13:00:15.966Z]   - null, null (ID: 4d7d18ec-3b64-4cb0-bad0-423d58f12d0a)
+[2026-02-08T13:00:15.967Z]   - null, null (ID: 8be3e43a-0e6b-4545-bcd3-993b6cc5c853)
+[2026-02-08T13:00:15.967Z]   - null, null (ID: 7674e784-5131-4b5a-bc8b-f26717a9e872)
+[2026-02-08T13:00:15.968Z]   - null, null (ID: ebe8ecef-cedd-4a7a-8c38-bfeefacd1b9b)
+[2026-02-08T13:00:15.968Z]   - null, null (ID: e018aa5d-947d-4f6a-9184-c0da7228e08d)
+[2026-02-08T13:00:15.969Z]   - null, null (ID: ee879415-556b-4484-b77c-a1d86b1fc9d7)
+[2026-02-08T13:00:15.970Z]   - null, null (ID: 933ecc53-13b6-415f-9044-9b4be8ee0a93)
+[2026-02-08T13:00:15.970Z]   - null, null (ID: 4ae5c206-78f9-4ff2-9f3f-76b5f5944030)
+[2026-02-08T13:00:15.987Z] Deleting these records from database...
+[2026-02-08T13:00:18.638Z] Successfully deleted 893 international trials.
