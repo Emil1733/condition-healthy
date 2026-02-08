@@ -31,7 +31,6 @@ export default function Home() {
           </p>
 
 
-import HeroSearch from "@/components/HeroSearch";
 
 // ... inside the component ...
           {/* Search Bar Visual */}
