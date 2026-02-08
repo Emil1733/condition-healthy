@@ -19,14 +19,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white -z-10" />
         
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
+          <h1 className="text-3xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4 md:mb-6 leading-tight">
             Find <span className="text-blue-700">Clinical Trials</span> Near You.
           </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto px-2">
              Get access to advanced medical treatments and earn compensation up to $1,200/visit. No insurance required.
           </p>
 
@@ -41,7 +41,7 @@ export default function Home() {
       </section>
 
       {/* Popular locations (For Testing) */}
-      <section className="py-20 max-w-6xl mx-auto px-4">
+      <section className="py-12 md:py-20 max-w-6xl mx-auto px-4">
          <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Research Studies</h2>
             <p className="text-gray-500">Select a condition to find trials in your area</p>

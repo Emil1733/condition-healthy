@@ -80,7 +80,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
         })}
       </Script>
       {/* Hero Section */}
-      <section className="bg-white border-b border-gray-200 pt-8 pb-24">
+      <section className="bg-white border-b border-gray-200 pt-8 pb-12 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* UI Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-gray-400 mb-12">
@@ -115,7 +115,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
       </section>
 
       {/* Directory Grid */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-10 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {activeConditions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {activeConditions.map((cond) => (
@@ -165,7 +165,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
       <TrustBar />
 
       {/* SEO Footer Content */}
-      <section className="py-20 bg-white border-t border-gray-100">
+      <section className="py-10 md:py-20 bg-white border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Why Participate in Clinical Research?</h2>
             <div className="grid md:grid-cols-3 gap-12 text-left">

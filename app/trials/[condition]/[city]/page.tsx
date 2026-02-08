@@ -240,7 +240,7 @@ export default async function TrialPage(props: PageProps) {
       </Script>
 
       {/* 1. Hero Section */}
-      <section className="bg-white border-b border-gray-200 pt-8 pb-24 relative overflow-hidden">
+      <section className="bg-white border-b border-gray-200 pt-8 pb-12 md:pb-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* UI Breadcrumbs */}
@@ -311,9 +311,9 @@ export default async function TrialPage(props: PageProps) {
       <TrustBar />
 
       {/* 3. "Medical Grade" Info Section */}
-      <section className="py-20 max-w-4xl mx-auto px-4">
+      <section className="py-10 md:py-20 max-w-4xl mx-auto px-4">
              {/* Main Content Sections */}
-             <div className="mt-16 grid lg:grid-cols-3 gap-12">
+             <div className="mt-8 md:mt-16 grid lg:grid-cols-3 gap-12">
                
                {/* Column 1 & 2: Main Details */}
                <div className="lg:col-span-2 space-y-12">

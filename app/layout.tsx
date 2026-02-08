@@ -57,11 +57,9 @@ export default function RootLayout({
                     
                     {/* Brand & Mission */}
                     <div className="col-span-1 md:col-span-1">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="bg-blue-600 p-1 rounded">
-                                <ShieldCheck className="w-5 h-5 text-white" />
-                            </div>
-                            <span className="font-bold text-lg text-white">ConditionHealthy</span>
+                        <div className="flex items-center gap-1 mb-6">
+                            <span className="font-extrabold text-xl text-white tracking-tight font-sans">Condition</span>
+                            <span className="font-light text-xl text-blue-500 tracking-widest uppercase ml-1 font-sans">Healthy</span>
                         </div>
                         <p className="text-sm leading-relaxed">
                             A global research network dedicated to connecting patients with life-changing clinical trials through data transparency and empathetic care.
