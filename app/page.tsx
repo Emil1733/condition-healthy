@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Search, MapPin, Activity, ChevronRight } from "lucide-react";
 import TrustBar from "@/components/TrustBar";
+import HeroSearch from "@/components/HeroSearch";
 import { Metadata } from "next";
 
 import { SITE_CONFIG } from "@/lib/constants";
@@ -29,18 +30,12 @@ export default function Home() {
              Get access to advanced medical treatments and earn compensation up to $1,200/visit. No insurance required.
           </p>
 
+
+import HeroSearch from "@/components/HeroSearch";
+
+// ... inside the component ...
           {/* Search Bar Visual */}
-          <div className="bg-white p-2 rounded-2xl shadow-xl border border-gray-100 max-w-xl mx-auto flex items-center gap-2 mb-12 transform hover:scale-[1.01] transition-all">
-             <MapPin className="w-6 h-6 text-gray-400 ml-4" aria-hidden="true" />
-             <input 
-                type="text" 
-                placeholder="Enter your Zip Code (e.g., 78701)" 
-                className="flex-1 p-3 outline-none text-gray-700 font-medium placeholder-gray-400"
-             />
-             <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-all">
-                Search
-             </button>
-          </div>
+          <HeroSearch />
           
           <TrustBar />
         </div>
