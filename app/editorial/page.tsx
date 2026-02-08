@@ -12,7 +12,7 @@ export default function EditorialStandardsPage() {
         </div>
 
         <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed">
-          <p className="text-xl font-medium mb-6">ConditionHealthy.com is committed to providing accurate, reliable, and unbiased information about clinical trials.</p>
+          <p className="text-xl font-medium mb-6">www.ConditionHealthy.com is committed to providing accurate, reliable, and unbiased information about clinical trials.</p>
           
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Integrity Commitment</h2>
           <p className="mb-6">Every clinical study listed on our platform is sourced directly from clinical research organizations (CROs) or the official ClinicalTrials.gov registry. We prioritize active, recruiting studies to ensure our users have access to real healthcare opportunities.</p>

@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /_error/
 Disallow: /*?*
 
-Sitemap: https://conditionhealthy.com/sitemap.xml
+Sitemap: https://www.conditionhealthy.com/sitemap.xml
