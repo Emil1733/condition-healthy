@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /_next/
+Disallow: /api/
+Disallow: /_error/
+Disallow: /*?*
+
+Sitemap: https://conditionhealthy.com/sitemap.xml

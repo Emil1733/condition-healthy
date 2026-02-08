@@ -2,23 +2,55 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, ArrowRight } from "lucide-react";
+import { X, Check, ArrowRight, ShieldCheck } from "lucide-react";
+
+import { submitLead } from "@/app/actions/leads";
 
 interface QuizModalProps {
   isOpen: boolean;
   onClose: () => void;
   condition: string;
+  city: string; // Added city prop
 }
 
-export default function QuizModal({ isOpen, onClose, condition }: QuizModalProps) {
+export default function QuizModal({ isOpen, onClose, condition, city }: QuizModalProps) {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<any>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleAnswer = (key: string, value: any) => {
+  const handleAnswer = (key: string, value: string) => {
     setAnswers({ ...answers, [key]: value });
     setStep(step + 1);
+  };
+
+  const handleSubmitEmail = async () => {
+    if (!email || !email.includes("@")) return;
+
+    setIsSubmitting(true);
+    const result = await submitLead({
+      email,
+      condition,
+      city,
+      answers,
+    });
+
+    if (result.success) {
+      setIsSuccess(true);
+      // Wait bit then close or show final success
+      setTimeout(() => {
+        onClose();
+        setStep(0);
+        setIsSuccess(false);
+        setEmail("");
+      }, 3000);
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+    setIsSubmitting(false);
   };
 
   const questions = [
@@ -51,7 +83,7 @@ export default function QuizModal({ isOpen, onClose, condition }: QuizModalProps
         <div className="w-full bg-gray-100 h-2">
           <div
             className="bg-blue-600 h-2 transition-all duration-500"
-            style={{ width: `${((step + 1) / 5) * 100}%` }}
+            style={{ width: `${((step + 1) / 4) * 100}%` }}
           />
         </div>
 
@@ -89,7 +121,7 @@ export default function QuizModal({ isOpen, onClose, condition }: QuizModalProps
                   ))}
                 </div>
               </motion.div>
-            ) : step === 3 ? (
+            ) : (
               /* Success / Email Capture Step */
               <motion.div
                 key="success"
@@ -97,23 +129,49 @@ export default function QuizModal({ isOpen, onClose, condition }: QuizModalProps
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Check className="w-8 h-8 text-green-600" />
+                {isSuccess ? (
+                  <>
+                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Submission Received!</h2>
+                    <p className="text-gray-600">
+                      A research specialist will contact you shortly with matching trials.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Great News!</h2>
+                    <p className="text-gray-600 mb-8">
+                      You qualify for the <b>{condition}</b> study in <b>{city}</b>. Enter your email to see the clinic details.
+                    </p>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full px-4 py-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4 outline-none"
+                    />
+                    <button 
+                      onClick={handleSubmitEmail}
+                      disabled={isSubmitting || !email}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? "Processing..." : "See Matching Trials"}
+                    </button>
+                  </>
+                )}
+
+                {/* Security Signal Footer */}
+                <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                  <ShieldCheck className="w-3 h-3 text-green-500" />
+                  Secure & Encrypted 256-bit Connection
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Great News!</h2>
-                <p className="text-gray-600 mb-8">
-                  You qualify for the <b>{condition}</b> study. Enter your email to see the clinic details.
-                </p>
-                <input
-                  type="email"
-                  placeholder="name@example.com"
-                  className="w-full px-4 py-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4 outline-none"
-                />
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg text-lg">
-                    See Matching Trials
-                </button>
               </motion.div>
-            ) : null}
+            )}
           </AnimatePresence>
         </div>
       </motion.div>

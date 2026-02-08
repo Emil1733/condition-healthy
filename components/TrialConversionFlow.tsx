@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EligibilityCard from "./EligibilityCard";
 import QuizModal from "./QuizModal";
 
@@ -12,6 +12,13 @@ interface TrialConversionFlowProps {
 
 export default function TrialConversionFlow({ condition, city, payout }: TrialConversionFlowProps) {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+  // Elite trust engineering: Allow triggering the quiz from anywhere (e.g. study listings)
+  useEffect(() => {
+    const handleOpenQuiz = () => setIsQuizOpen(true);
+    window.addEventListener("open-eligibility-quiz", handleOpenQuiz);
+    return () => window.removeEventListener("open-eligibility-quiz", handleOpenQuiz);
+  }, []);
 
   return (
     <>
@@ -26,6 +33,7 @@ export default function TrialConversionFlow({ condition, city, payout }: TrialCo
         isOpen={isQuizOpen} 
         onClose={() => setIsQuizOpen(false)} 
         condition={condition}
+        city={city}
       />
     </>
   );

@@ -35,15 +35,15 @@ export default function EligibilityCard({ condition, location, payout, onCheckCl
       {/* Checklist */}
       <div className="space-y-4 mb-8">
         <div className="flex items-start">
-          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" aria-hidden="true" />
           <span className="text-gray-700 font-medium">Diagnosed with {condition}?</span>
         </div>
         <div className="flex items-start">
-          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" aria-hidden="true" />
           <span className="text-gray-700 font-medium">Aged 18-65?</span>
         </div>
         <div className="flex items-start">
-          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" aria-hidden="true" />
           <span className="text-gray-700 font-medium">Live near {location}?</span>
         </div>
       </div>
