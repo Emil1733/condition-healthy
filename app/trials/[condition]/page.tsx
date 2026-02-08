@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Activity, MapPin, ChevronRight, ShieldCheck } from "lucide-react";
 import Script from "next/script";
 import StudyCard from "@/components/StudyCard";
-
 import { SITE_CONFIG } from "@/lib/constants";
 
 interface PageProps {
@@ -32,33 +31,7 @@ export default async function ConditionHubPage(props: PageProps) {
   const { condition } = params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://conditionhealthy.com"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "All Trials",
-        "item": "https://conditionhealthy.com/trials"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": formattedCondition,
-        "item": `https://conditionhealthy.com/trials/${condition}`
-      }
-    ]
-  };
-
   // 1. Fetch cities that have trials for this condition
-  // We'll query our 'studies' table to find all unique cities with this condition
   const { data: cityData, error } = await supabase
     .from("studies")
     .select("location_city, location_state")
@@ -69,7 +42,15 @@ export default async function ConditionHubPage(props: PageProps) {
     return notFound();
   }
 
-  // 2. Group and Count trials per city
+  // 2. Fetch Nationwide Studies (Showcase)
+  const { data: nationwideStudies } = await supabase
+    .from("studies")
+    .select("*")
+    .ilike("condition", `%${condition}%`)
+    .eq("status", "Recruiting")
+    .limit(6);
+
+  // 3. Group and Count trials per city
   const cityCounts = cityData.reduce((acc: Record<string, { city: string, state: string, count: number }>, curr) => {
     if (!curr.location_city) return acc;
     const citySlug = curr.location_city.toLowerCase().replace(/ /g, "-");
@@ -147,33 +128,39 @@ export default async function ConditionHubPage(props: PageProps) {
         </div>
       </section>
 
-
-import StudyCard from "@/components/StudyCard";
-
-// ... imports
-
-// ... inside ConditionHubPage ...
-
-  // 1. Fetch cities (existing logic) ...
-
-  // 2. Fetch Nationwide Studies (Showcase)
-  const { data: nationwideStudies } = await supabase
-    .from("studies")
-    .select("*")
-    .ilike("condition", `%${condition}%`)
-    .eq("status", "Recruiting")
-    .limit(6);
-
-  // ... city grouping logic ...
-
-  return (
-    <main className="min-h-screen bg-gray-50 pb-20">
-       {/* ... existing sections ... */}
-
       {/* City Directory */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         {/* ... (Existing City Grid) ... */}
-         
+         <h2 className="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">
+            Research Centers in {formattedCondition} High-Opportunity Areas
+         </h2>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedCities.map((item) => {
+              const citySlug = `${item.city.toLowerCase().replace(/ /g, "-")}-${item.state.toLowerCase()}`;
+              return (
+                <Link 
+                   key={citySlug}
+                   href={`/trials/${condition}/${citySlug}`}
+                   className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all flex items-center justify-between"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="bg-gray-50 p-3 rounded-xl group-hover:bg-blue-50 transition-colors">
+                            <MapPin className="w-6 h-6 text-gray-400 group-hover:text-blue-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900 group-hover:text-blue-700 transition-colors">
+                                {item.city} {formattedCondition} Trials
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                                {item.state} • {item.count} Active {item.count === 1 ? 'Trial' : 'Trials'}
+                            </p>
+                        </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                </Link>
+              );
+            })}
+         </div>
+
          {/* NEW: Nationwide Studies Grid */}
          <div className="mt-24 pt-16 border-t border-gray-200">
             <div className="text-center mb-12">
@@ -206,7 +193,6 @@ import StudyCard from "@/components/StudyCard";
 
          {/* Trust Footer */}
          <div className="mt-20 flex flex-col items-center">
-    {/* ... */}
             <div className="flex items-center gap-12 opacity-40 grayscale filter hover:grayscale-0 transition-all">
                 {/* Placeholders for partner logos */}
                 <div className="text-xs font-bold uppercase tracking-widest text-gray-400">NIH Data Verified</div>
