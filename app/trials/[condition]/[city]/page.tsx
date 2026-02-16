@@ -224,16 +224,16 @@ export default async function TrialPage(props: PageProps) {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "mainEntity": (pageContent?.local_faq as { q: string; a: string }[] || [
+          "mainEntity": (pageContent?.local_faq as any[] || [
             { q: "Is travel compensation available?", a: "Yes, many trials in the area provide stipends for travel expenses." },
             { q: "Do I need insurance?", a: "No, all study-related care and medication are provided at no cost." },
             { q: "Can I keep my current doctor?", a: "Absolutely. Study participation is a supplemental care option." }
           ]).map(faq => ({
             "@type": "Question",
-            "name": faq.q,
+            "name": faq.q || faq.question || faq.Question || "Frequently Asked Question",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": faq.a
+              "text": faq.a || faq.answer || faq.Answer || "Please contact us for more details."
             }
           }))
         })}

@@ -51,7 +51,7 @@ async function hydra() {
 
       // 3. Multi-Module Generation
       const prompt = `
-        Return a JSON object with fields: intro (80 words), medical (60 words), environment (60 words), faqs (Array of 3 objects), meta_title, meta_description.
+        Return a JSON object with fields: intro (80 words), medical (60 words), environment (60 words), faqs (Array of 3 objects with keys "q" and "a"), meta_title, meta_description.
         For patients with ${condition} in ${loc.city}, ${loc.state}.
         TONE: Empathetic, professional.
         FORMAT: Strictly JSON.
