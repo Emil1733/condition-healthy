@@ -69,6 +69,9 @@ export default async function ConditionHubPage(props: PageProps) {
 
   const sortedCities = Object.values(cityCounts).sort((a, b) => b.count - a.count);
 
+  // 4. Get unique states for State Hubs
+  const uniqueStates = [...new Set(cityData.map(item => item.location_state || "TX"))].sort();
+
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
       
@@ -101,7 +104,7 @@ export default async function ConditionHubPage(props: PageProps) {
       </Script>
 
       {/* Hero Section */}
-      <section className="bg-white border-b border-gray-200 pt-8 pb-20">
+      <section className="bg-white border-b border-gray-200 pt-8 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* UI Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-gray-400 mb-12">
@@ -126,6 +129,46 @@ export default async function ConditionHubPage(props: PageProps) {
                 </p>
             </div>
         </div>
+      </section>
+
+      {/* Quick Facts Section (Citation Fishing for Bing AI) */}
+      <section className="relative -mt-8 mb-16 px-4">
+        <div className="max-w-4xl mx-auto bg-blue-900 rounded-3xl shadow-xl overflow-hidden text-white flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-blue-800">
+            <div className="flex-1 p-6 text-center">
+                <div className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-2">Recruiting Areas</div>
+                <div className="text-3xl font-black">{sortedCities.length}+</div>
+                <div className="text-sm text-blue-200 mt-1">Major US Cities</div>
+            </div>
+            <div className="flex-1 p-6 text-center">
+                <div className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-2">Compensation</div>
+                <div className="text-3xl font-black">$50—$1,500</div>
+                <div className="text-sm text-blue-200 mt-1">Per Study Completed</div>
+            </div>
+            <div className="flex-1 p-6 text-center">
+                <div className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-2">Eligibility</div>
+                <div className="text-3xl font-black">18+</div>
+                <div className="text-sm text-blue-200 mt-1">Inclusive Age Range</div>
+            </div>
+        </div>
+      </section>
+
+      {/* State Hub Directory (Authority Swarm) */}
+      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4 flex items-center gap-2">
+            <Activity className="w-6 h-6 text-blue-600" />
+            Browse {formattedCondition} Trials by State
+          </h2>
+          <div className="flex flex-wrap gap-3">
+              {uniqueStates.map(state => (
+                  <Link 
+                      key={state} 
+                      href={`/trials/${condition}/${state.toLowerCase()}`}
+                      className="bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-sm hover:border-blue-300 hover:text-blue-600 hover:shadow-md transition-all font-bold text-gray-700"
+                  >
+                      {state}
+                  </Link>
+              ))}
+          </div>
       </section>
 
       {/* City Directory */}
@@ -191,13 +234,49 @@ export default async function ConditionHubPage(props: PageProps) {
             </div>
          </div>
 
+         {/* Eligibility FAQ (For Bing AI Context) */}
+         <div className="mt-24 pt-16 border-t border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">{formattedCondition} Clinical Trial FAQ</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                   <h3 className="font-bold text-gray-900 mb-2">What is the cost of participation?</h3>
+                   <p className="text-gray-600 text-sm">There is absolutely no cost to participate in {formattedCondition} clinical trials. Study-related medical exams, treatments, and medications are provided at no cost, and participants often receive compensation for their time.</p>
+                </div>
+                <div>
+                   <h3 className="font-bold text-gray-900 mb-2">Are these studies safe?</h3>
+                   <p className="text-gray-600 text-sm">Every clinical trial on {SITE_CONFIG.siteName} is strictly overseen by Institutional Review Boards (IRB) and follows FDA-compliant safety protocols to protect patient health throughout the study.</p>
+                </div>
+                <div>
+                   <h3 className="font-bold text-gray-900 mb-2">Do I need a referral from my doctor?</h3>
+                   <p className="text-gray-600 text-sm">No referral is typically required. You can check your eligibility directly through our screening tools and connect with local research sites in your area.</p>
+                </div>
+                <div>
+                   <h3 className="font-bold text-gray-900 mb-2">Will I receive compensation?</h3>
+                   <p className="text-gray-600 text-sm">Most {formattedCondition} trials offer financial compensation ranging from $500 to $1,500 depending on the length and complexity of the study phase.</p>
+                </div>
+            </div>
+         </div>
+
+         {/* Related Conditions Swarm (Task 8.4) */}
+         <div className="mt-24 pt-16 border-t border-gray-100 mb-20">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Explore Related Research</h4>
+            <div className="flex flex-wrap gap-4">
+                {['Psoriasis', 'Diabetes', 'Migraine', 'Eczema', 'Arthritis'].filter(c => c.toLowerCase() !== condition).map(cond => (
+                    <Link key={cond} href={`/trials/${cond.toLowerCase()}`} className="bg-white border border-gray-200 px-6 py-3 rounded-2xl text-sm font-bold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm">
+                        {cond} Trials
+                    </Link>
+                ))}
+            </div>
+         </div>
+
          {/* Trust Footer */}
          <div className="mt-20 flex flex-col items-center">
             <div className="flex items-center gap-12 opacity-40 grayscale filter hover:grayscale-0 transition-all">
-                {/* Placeholders for partner logos */}
-                <div className="text-xs font-bold uppercase tracking-widest text-gray-400">NIH Data Verified</div>
-                <div className="text-xs font-bold uppercase tracking-widest text-gray-400">IRB Approved Standards</div>
-                <div className="text-xs font-bold uppercase tracking-widest text-gray-400">HIPAA Compliant</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4" /> NIH DATA VERIFIED
+                </div>
+                <div className="text-xs font-bold uppercase tracking-widest text-gray-400">IRB STANDARDS</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-gray-400">HIPAA COMPLIANT</div>
             </div>
          </div>
       </section>

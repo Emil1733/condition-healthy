@@ -13,23 +13,50 @@ import MedicalByline from "@/components/MedicalByline";
 
 import { SITE_CONFIG } from "@/lib/constants";
 
+// Helper to identify State vs City
+const isStateCode = (slug: string) => slug.length === 2 && /^[a-z]{2}$/i.test(slug);
+
 // Elite SEO: Dynamic Metadata Generation
 export async function generateMetadata(props: PageProps) {
   const params = await props.params;
-  const { condition, city } = params;
+  const { condition, slug } = params;
+  const isState = isStateCode(slug);
   
-  // 1. Fetch Location Data
+  if (isState) {
+    const stateName = slug.toUpperCase();
+    const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+    
+    // Check if we have state-level content
+    const { data: pageContent } = await supabase
+      .from("page_content")
+      .select("id")
+      .eq("path_slug", `${condition}/${slug}`)
+      .single();
+
+    return {
+      title: `${formattedCondition} Clinical Trials in ${stateName} | State Hub 2026`,
+      description: `Find recruiting ${formattedCondition} clinical trials throughout the state of ${stateName}. Access local research opportunities and compensation via ${SITE_CONFIG.brandingSuffix}.`,
+      alternates: {
+        canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug.toLowerCase()}`,
+      },
+      robots: {
+        index: !!pageContent, // Only index if we have state content
+        follow: true,
+      }
+    };
+  }
+
+  // City Logic (Existing)
   const { data: locationData } = await supabase
     .from("locations")
     .select("*")
-    .eq("slug", city)
+    .eq("slug", slug)
     .single();
 
-  // 2. Fetch Helper Data to Determine Page Quality (Index vs NoIndex)
   const { data: pageContent } = await supabase
     .from("page_content")
     .select("id")
-    .eq("path_slug", `${condition}/${city}`)
+    .eq("path_slug", `${condition}/${slug}`)
     .single();
 
   const { count: localStudyCount } = await supabase
@@ -37,58 +64,143 @@ export async function generateMetadata(props: PageProps) {
     .select("nct_id", { count: 'exact', head: true })
     .ilike("condition", `%${condition}%`)
     .ilike("status", "recruiting")
-    .ilike("location_city", city.replace(/-/g, ' '));
+    .ilike("location_city", slug.replace(/-/g, ' '));
   
-  // Quality Gate: Only index if we have AI content OR actual local studies
   const shouldIndex = !!pageContent || (localStudyCount || 0) > 0;
-
-  const formattedCity = city.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  const formattedCity = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   return {
     title: `${formattedCondition} Clinical Trials in ${formattedCity} | ${SITE_CONFIG.brandingSuffix}`,
     description: `Find recruiting ${formattedCondition} clinical trials in ${formattedCity}. Access new treatment options at no cost + compensation up to $1,500 via ${SITE_CONFIG.brandingSuffix}.`,
     alternates: {
-      canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${city}`,
+      canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug}`,
     },
     robots: {
       index: shouldIndex,
-      follow: true, // Always follow links to find other good pages
+      follow: true,
     }
   };
 }
 
 // This function tells Next.js which pages to build at build time (SSG)
-// For now, we return an empty array or a few examples to keep builds fast.
-// In production, we would fetch all cities here.
 export async function generateStaticParams() {
   return []; 
 }
 
-// Set revalidation time (ISR) - regenerate page every 24 hours
 export const revalidate = 86400;
 
 interface PageProps {
   params: Promise<{
     condition: string;
-    city: string;
+    slug: string;
   }>;
 }
 
 export default async function TrialPage(props: PageProps) {
   const params = await props.params;
-  const { condition, city } = params;
-  
-  // formatting
-  const formattedCity = city.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
-  const pathSlug = `${condition}/${city}`;
+  const { condition, slug } = params;
+  const isState = isStateCode(slug);
 
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+  const pathSlug = `${condition}/${slug}`;
+
+  // Fetch AI Content (Shared)
+  const { data: pageContent } = await supabase
+    .from("page_content")
+    .select("*")
+    .eq("path_slug", pathSlug)
+    .single();
+
+  if (isState) {
+    const stateName = slug.toUpperCase();
+    
+    // Fetch all cities in this state for this condition
+    const { data: stateCities } = await supabase
+      .from("locations")
+      .select("city, slug")
+      .eq("state", stateName)
+      .order('city', { ascending: true });
+
+    // Fetch elite studies for the state
+    const { data: stateStudies } = await supabase
+      .from("studies")
+      .select("*")
+      .ilike("condition", `%${condition}%`)
+      .ilike("status", "recruiting")
+      .ilike("location_state", `%${stateName}%`)
+      .limit(5);
+
+    return (
+      <main className="min-h-screen bg-gray-50 pb-20">
+        <section className="bg-white border-b border-gray-200 pt-8 pb-12 md:pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex items-center gap-2 text-sm text-gray-400 mb-12">
+                <Link href="/" className="hover:text-blue-600">Home</Link>
+                <ChevronRight className="w-4 h-4" />
+                <Link href="/trials" className="hover:text-blue-600">All Trials</Link>
+                <ChevronRight className="w-4 h-4" />
+                <Link href={`/trials/${condition}`} className="hover:text-blue-600">{formattedCondition} Trials</Link>
+                <ChevronRight className="w-4 h-4" />
+                <span className="text-gray-900 font-medium">{stateName} Hub</span>
+            </nav>
+
+            <div className="max-w-3xl">
+              <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+                {formattedCondition} Clinical Trials in <span className="text-blue-700">{stateName}</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                {pageContent?.intro_text || `Exploring modern treatment options for ${formattedCondition} across ${stateName}. Our network connects patients in ${stateName} with clinical research studies offering specialized care and compensation.`}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-3 gap-12">
+                <div className="lg:col-span-2 space-y-12">
+                    <section>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Research Centers by City</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {stateCities?.map(city => (
+                                <Link 
+                                    key={city.slug} 
+                                    href={`/trials/${condition}/${city.slug}`}
+                                    className="bg-white p-4 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700"
+                                >
+                                    {city.city}
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+                
+                <div className="space-y-8">
+                    <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl">
+                        <h3 className="font-bold text-lg mb-2">Check State Eligibility</h3>
+                        <p className="text-blue-100 text-sm mb-6">See if you qualify for active {formattedCondition} studies in {stateName}.</p>
+                        <QuizTrigger className="w-full bg-white text-blue-600 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors">
+                            Start Eligibility Quiz
+                        </QuizTrigger>
+                    </div>
+                </div>
+            </div>
+        </section>
+      </main>
+    );
+  }
+
+  // ---------------------------------------------------------
+  // City Logic
+  // ---------------------------------------------------------
+  const formattedCity = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  const currentStateAbbr = slug.split('-').pop()?.toUpperCase() || "TX";
+  
   // 1. Fetch Location Data
   const { data: locationData } = await supabase
     .from("locations")
     .select("*")
-    .eq("slug", city)
+    .eq("slug", slug)
     .single();
 
   // 2. Fetch Study Data (Multi-Tier Strategy for Max Relevance)
@@ -131,21 +243,16 @@ export default async function TrialPage(props: PageProps) {
   }
 
   const studies = finalStudies;
-  
-  // 3. Fetch PRE-GENERATED Content (Static Strategy)
-  const { data: pageContent } = await supabase
-    .from("page_content")
-    .select("*")
-    .eq("path_slug", pathSlug)
-    .single();
 
   // 4. Fetch Nearby Locations (for SEO linking)
+  const currentState = locationData?.state || currentStateAbbr;
   const { data: nearbyLocations } = await supabase
     .from("locations")
     .select("city, slug")
-    .eq("state", locationData?.state || "TX")
-    .neq("slug", city)
-    .limit(5);
+    .eq("state", currentState)
+    .neq("slug", slug)
+    .order('city', { ascending: true })
+    .limit(10);
 
   // Determine Payout (Generic fallback if no DB data yet)
   const firstStudy = studies[0];
@@ -212,8 +319,14 @@ export default async function TrialPage(props: PageProps) {
             {
               "@type": "ListItem",
               "position": 4,
+              "name": `${currentState} Hub`,
+              "item": `${SITE_CONFIG.baseUrl}/trials/${condition}/${currentState.toLowerCase()}`
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
               "name": formattedCity,
-              "item": `${SITE_CONFIG.baseUrl}/trials/${condition}/${city}`
+              "item": `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug}`
             }
           ]
         })}
@@ -246,11 +359,13 @@ export default async function TrialPage(props: PageProps) {
           {/* UI Breadcrumbs */}
           <nav className="flex items-center gap-2 text-sm text-gray-400 mb-12">
               <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-              <ChevronRight className="w-4 h-4" aria-hidden="true" />
+              <ChevronRight className="w-4 h-4" />
               <Link href="/trials" className="hover:text-blue-600 transition-colors">All Trials</Link>
-              <ChevronRight className="w-4 h-4" aria-hidden="true" />
+              <ChevronRight className="w-4 h-4" />
               <Link href={`/trials/${condition}`} className="hover:text-blue-600 transition-colors">{formattedCondition} Trials</Link>
-              <ChevronRight className="w-4 h-4 text-gray-300" aria-hidden="true" />
+              <ChevronRight className="w-4 h-4" />
+              <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} className="hover:text-blue-600 transition-colors">{currentState} Hub</Link>
+              <ChevronRight className="w-4 h-4 text-gray-300" />
               <span className="text-gray-900 font-medium">{formattedCity}</span>
           </nav>
 
@@ -446,19 +561,25 @@ export default async function TrialPage(props: PageProps) {
                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Browse by Condition</h4>
                      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-8">
                         {['Psoriasis', 'Diabetes', 'Migraine', 'Eczema', 'Arthritis'].map(cond => (
-                          <Link key={cond} href={`/trials/${cond.toLowerCase()}/${city}`} className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                          <Link key={cond} href={`/trials/${cond.toLowerCase()}/${slug}`} className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
                             {cond} in {formattedCity}
                           </Link>
                         ))}
                      </div>
 
-                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Nearby Locations</h4>
-                     <div className="flex flex-wrap gap-x-4 gap-y-2">
-                        {nearbyLocations?.map(loc => (
-                          <Link key={loc.slug} href={`/trials/${condition}/${loc.slug}`} className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
-                            {loc.city} {formattedCondition}
-                          </Link>
-                        ))}
+                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Nearby {formattedCondition} Trials</h4>
+                     <div className="flex flex-col gap-2 mb-8">
+                        <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl text-sm font-bold border border-blue-100 hover:bg-blue-100 transition-all flex items-center justify-between">
+                            View All {currentState} Trials
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2">
+                           {nearbyLocations?.map(loc => (
+                             <Link key={loc.slug} href={`/trials/${condition}/${loc.slug}`} className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                               {loc.city}
+                             </Link>
+                           ))}
+                        </div>
                      </div>
                   </div>
                </div>

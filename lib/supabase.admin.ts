@@ -1,10 +1,15 @@
+import { createClient } from "@supabase/supabase-js";
+// Load env vars from .env.local only in local script environments (not Next.js runtime)
+if (!process.env.NEXT_RUNTIME) {
+  try {
+    const dotenv = require('dotenv');
+    dotenv.config({ path: '.env.local' });
+  } catch (e) {
+    // dotenv might not be available in production, ignore
+  }
+}
 
-import { createClient } from '@supabase/supabase-js'
-import dotenv from 'dotenv'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-dotenv.config({ path: '.env.local' })
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);

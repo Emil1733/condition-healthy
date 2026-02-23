@@ -17,19 +17,28 @@ async function hydra() {
   // Unique conditions
   const conditions = [...new Set(studies.map(s => s.condition))];
   
-  // Handle --limit flag
+  // Handle --limit and --condition flags
   const limitArg = process.argv.find(arg => arg.startsWith('--limit='));
   const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : (process.argv.includes('--limit') ? 10 : Infinity);
+  
+  const conditionArg = process.argv.find(arg => arg.startsWith('--condition='));
+  const targetCondition = conditionArg ? conditionArg.split('=')[1].toLowerCase() : null;
+
   let processedCount = 0;
 
   console.log(`📊 Found ${locations.length} cities and ${conditions.length} conditions.`);
-  console.log(`🎯 Target: ${locations.length * conditions.length} unique pages (Limit: ${limit}).`);
+  if (targetCondition) console.log(`🎯 Filtering for condition: [${targetCondition}]`);
+  console.log(`🎯 Target: ${locations.length * (targetCondition ? 1 : conditions.length)} unique pages (Limit: ${limit}).`);
 
   // 2. Iterate and check for work
   for (const loc of locations) {
     if (processedCount >= limit) break;
     for (const condition of conditions) {
       if (processedCount >= limit) break;
+      
+      // If filtering by condition, skip others
+      if (targetCondition && condition.toLowerCase() !== targetCondition) continue;
+
       const pathSlug = `${condition.toLowerCase()}/${loc.slug}`;
 
       // Check if already generated
@@ -49,11 +58,22 @@ async function hydra() {
 
       console.log(`\n🤖 STEP 1: Preparing Generation for [${condition}] x [${loc.city}]`);
 
-      // 3. Multi-Module Generation
+      // 3. Multi-Module Generation (Anti-Fluff refined)
       const prompt = `
-        Return a JSON object with fields: intro (80 words), medical (60 words), environment (60 words), faqs (Array of 3 objects with keys "q" and "a"), meta_title, meta_description.
-        For patients with ${condition} in ${loc.city}, ${loc.state}.
-        TONE: Empathetic, professional.
+        Return a JSON object for patients with ${condition} in ${loc.city}, ${loc.state}.
+        FIELDS: 
+        - intro: (60-80 words) Professional, clinical summary of research landscape. 
+        - medical: (50-60 words) Specific medical challenges of ${condition}.
+        - environment: (50-60 words) How ${loc.city}'s climate/urban setting affects this condition. 
+        - faqs: (Array of 3 objects with "q" and "a") Focused on logistics/compensation.
+        - meta_title: (Under 60 chars) Direct keyword-first title.
+        - meta_description: (Under 155 chars) Information-dense summary.
+
+        CRITICAL STYLE GUIDE:
+        - NO fluff like "embarking on a journey," "unlocking potential," "a beacon of hope."
+        - NO repetitive adjectives like "cutting-edge," "state-of-the-art," "revolutionary."
+        - USE: Data-driven language, clinical transparency, and direct local references.
+        - TONE: Medically objective and informative.
         FORMAT: Strictly JSON.
       `;
 
