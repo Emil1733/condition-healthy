@@ -47,6 +47,9 @@ create table if not exists public.page_content (
   medical_context text,
   environmental_factors text,
   local_faq jsonb,
+  local_facilities jsonb, -- [Phase 11] Array of top research hospitals/clinics
+  transit_info text,      -- [Phase 11] Local transit and accessibility logistics
+  demographic_context text, -- [Phase 11] Demographic and regional health data
   meta_title text,
   meta_description text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
