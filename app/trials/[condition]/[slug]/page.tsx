@@ -1,7 +1,7 @@
 
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase.custom";
-import { generateContent } from "@/lib/gemini";
+// import { generateContent } from "@/lib/gemini"; // Disabled: @google/generative-ai crashes on Cloudflare Edge due to async_hooks
 import TrustBar from "@/components/TrustBar";
 import EligibilityCard from "@/components/EligibilityCard";
 import { ShieldCheck, MapPin, Activity, ChevronRight } from "lucide-react";
