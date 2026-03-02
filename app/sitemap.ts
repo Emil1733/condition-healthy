@@ -2,6 +2,8 @@ import { SITE_CONFIG } from "@/lib/constants";
 import { supabaseAdmin } from "@/lib/supabase.admin";
 import { MetadataRoute } from "next";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.baseUrl;
 
