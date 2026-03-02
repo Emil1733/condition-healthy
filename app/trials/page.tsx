@@ -5,6 +5,7 @@ import Link from "next/link";
 import TrustBar from "@/components/TrustBar";
 import Script from "next/script";
 import { supabase } from "@/lib/supabase.custom";
+import { unstable_cache } from "next/cache";
 
 export const metadata = {
   title: `Browse Clinical Trials by Medical Condition | ${SITE_CONFIG.brandingSuffix}`,
@@ -29,29 +30,34 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+// Phase 13: Cache the heavy aggregate count queries
+const getConditionStats = unstable_cache(
+  async () => {
+    const conditionsToCheck = Object.keys(CONDITION_META);
+    return Promise.all(conditionsToCheck.map(async (slug) => {
+      const { count } = await supabase
+        .from("studies")
+        .select("*", { count: 'exact', head: true })
+        .ilike("condition", `%${slug}%`)
+        .ilike("status", "recruiting");
+      
+      return {
+        slug,
+        ...CONDITION_META[slug],
+        count: count || 0
+      };
+    }));
+  },
+  ['trials-directory-stats'],
+  { revalidate: 86400 } // Cache for 24 hours
+);
+
 export default async function TrialsDirectoryPage(props: PageProps) {
   const searchParams = await props.searchParams;
   const locationQuery = typeof searchParams.location === 'string' ? searchParams.location : '';
 
-  // 1. Fetch Real Counts from DB
-  // We'll search for studies matching our known conditions
-  // Optimization: In a real large-scale app, we'd use a dedicated 'stats' table or materialized view.
-  // For now, we'll run a count query for each condition we care about.
-  
-  const conditionsToCheck = Object.keys(CONDITION_META);
-  const conditionStats = await Promise.all(conditionsToCheck.map(async (slug) => {
-    const { count } = await supabase
-      .from("studies")
-      .select("*", { count: 'exact', head: true })
-      .ilike("condition", `%${slug}%`)
-      .ilike("status", "recruiting");
-    
-    return {
-      slug,
-      ...CONDITION_META[slug],
-      count: count || 0
-    };
-  }));
+  // 1. Fetch Cached Counts from DB
+  const conditionStats = await getConditionStats();
 
   // Filter out conditions with 0 trials to avoid empty pages
   const activeConditions = conditionStats.filter(c => c.count > 0).sort((a, b) => b.count - a.count);
