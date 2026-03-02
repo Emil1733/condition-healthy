@@ -13,6 +13,8 @@ import MedicalByline from "@/components/MedicalByline";
 
 import { SITE_CONFIG } from "@/lib/constants";
 
+export const runtime = "edge";
+
 // Helper to identify State vs City
 const isStateCode = (slug: string) => slug.length === 2 && /^[a-z]{2}$/i.test(slug);
 
