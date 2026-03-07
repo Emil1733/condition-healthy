@@ -147,7 +147,7 @@ export default async function TrialCityPage(props: PageProps) {
 
       {/* Main Content */}
       <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
           {/* Trials Grid */}
           <div className="lg:col-span-2 space-y-6">
             <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2 mb-6">
@@ -181,7 +181,7 @@ export default async function TrialCityPage(props: PageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div className="space-y-8 self-start lg:sticky lg:top-24">
             <div className="bg-blue-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <ShieldCheck className="w-24 h-24" />
