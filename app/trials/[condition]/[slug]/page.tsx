@@ -37,82 +37,74 @@ const getFullStateName = (abbr: string) => {
 
 // Elite SEO: Dynamic Metadata Generation
 export async function generateMetadata(props: PageProps) {
-  try {
-    const params = await props.params;
-    const { condition, slug } = params;
-    const isState = isStateCode(slug);
+  const params = await props.params;
+  const { condition, slug } = params;
+  const isState = isStateCode(slug);
+  
+  if (isState) {
+    const stateName = slug.toUpperCase();
+    const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
     
-    if (isState) {
-      const stateName = slug.toUpperCase();
-      const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
-      
-      // Check if we have state-level content
-      const { data: pageContent } = await supabase
-        .from("page_content")
-        .select("id")
-        .eq("path_slug", `${condition}/${slug}`)
-        .single();
-  
-      return {
-        title: `${formattedCondition} Clinical Trials in ${stateName} | State Hub 2026`,
-        description: `Find recruiting ${formattedCondition} clinical trials throughout the state of ${stateName}. Access local research opportunities and compensation via ${SITE_CONFIG.brandingSuffix}.`,
-        alternates: {
-          canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug.toLowerCase()}`,
-        },
-        robots: {
-          index: !!pageContent, // Only index if we have state content
-          follow: true,
-        }
-      };
-    }
-  
-    // City Logic (Existing)
-    const slugParts = slug.split('-');
-    const currentStateAbbr = slugParts.length > 1 ? slugParts.pop()?.toUpperCase() || "TX" : "TX";
-    const formattedCity = slugParts.length > 0 ? slugParts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : slug;
-    
-    const { data: locationData } = await supabase
-      .from("locations")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-  
+    // Check if we have state-level content
     const { data: pageContent } = await supabase
       .from("page_content")
       .select("id")
       .eq("path_slug", `${condition}/${slug}`)
       .single();
-  
-    const countRaw = await supabase
-      .from("studies")
-      .select("nct_id", { count: 'exact', head: true })
-      .ilike("condition", `%${condition}%`)
-      .ilike("status", "recruiting")
-      .ilike("location_city", formattedCity);
-      
-    const localStudyCount = countRaw.count || 0;
-    
-    const shouldIndex = !!pageContent || localStudyCount > 0;
-    const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
-  
+
     return {
-      title: `${formattedCondition} Clinical Trials in ${formattedCity} | ${SITE_CONFIG.brandingSuffix}`,
-      description: `Find recruiting ${formattedCondition} clinical trials in ${formattedCity}. Access new treatment options at no cost + compensation up to $1,500 via ${SITE_CONFIG.brandingSuffix}.`,
+      title: `${formattedCondition} Clinical Trials in ${stateName} | State Hub 2026`,
+      description: `Find recruiting ${formattedCondition} clinical trials throughout the state of ${stateName}. Access local research opportunities and compensation via ${SITE_CONFIG.brandingSuffix}.`,
       alternates: {
-        canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug}`,
+        canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug.toLowerCase()}`,
       },
       robots: {
-        index: shouldIndex,
+        index: !!pageContent, // Only index if we have state content
         follow: true,
       }
     };
-  } catch (error) {
-    console.error("METADATA CRASH:", error);
-    return {
-      title: `Clinical Trials Directory | ${SITE_CONFIG.siteName}`,
-      description: `Find local research opportunities and clinical trials.`
-    };
   }
+
+  // City Logic
+  const slugParts = slug.split('-');
+  const currentStateAbbr = slugParts.length > 1 ? slugParts.pop()?.toUpperCase() || "TX" : "TX";
+  const formattedCity = slugParts.length > 0 ? slugParts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : slug;
+  
+  const { data: locationData } = await supabase
+    .from("locations")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  const { data: pageContent } = await supabase
+    .from("page_content")
+    .select("id")
+    .eq("path_slug", `${condition}/${slug}`)
+    .single();
+
+  const countRaw = await supabase
+    .from("studies")
+    .select("nct_id", { count: 'exact', head: true })
+    .ilike("condition", `%${condition}%`)
+    .ilike("status", "recruiting")
+    .ilike("location_city", formattedCity);
+    
+  const localStudyCount = countRaw.count || 0;
+  
+  const shouldIndex = !!pageContent || localStudyCount > 0;
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+
+  return {
+    title: `${formattedCondition} Clinical Trials in ${formattedCity} | ${SITE_CONFIG.brandingSuffix}`,
+    description: `Find recruiting ${formattedCondition} clinical trials in ${formattedCity}. Access new treatment options at no cost + compensation up to $1,500 via ${SITE_CONFIG.brandingSuffix}.`,
+    alternates: {
+      canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug}`,
+    },
+    robots: {
+      index: shouldIndex,
+      follow: true,
+    }
+  };
 }
 
 // Phase 13: Edge Cache Optimization (24 hours)
@@ -127,20 +119,20 @@ interface PageProps {
 
 export default async function TrialPage(props: PageProps) {
   unstable_noStore();
-  try {
-    const params = await props.params;
-    const { condition, slug } = params;
-    const isState = isStateCode(slug);
+  
+  const params = await props.params;
+  const { condition, slug } = params;
+  const isState = isStateCode(slug);
 
-    const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
-    const pathSlug = `${condition}/${slug}`;
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+  const pathSlug = `${condition}/${slug}`;
 
-    // Fetch AI Content (Shared)
-    const { data: pageContent } = await supabase
-      .from("page_content")
-      .select("*")
-      .eq("path_slug", pathSlug)
-      .single();
+  // Fetch AI Content (Shared)
+  const { data: pageContent } = await supabase
+    .from("page_content")
+    .select("*")
+    .eq("path_slug", pathSlug)
+    .single();
 
   if (isState) {
     const stateName = slug.toUpperCase();
@@ -676,14 +668,4 @@ export default async function TrialPage(props: PageProps) {
       </section>
     </main>
   );
-  } catch (error: any) {
-    return (
-      <div style={{ padding: '2rem', fontFamily: 'monospace', color: 'red', backgroundColor: 'black' }}>
-        <h2>Fatal Server Route Error</h2>
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{error.message || String(error)}</pre>
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{error.stack || ''}</pre>
-        <p>Params: {JSON.stringify(props.params)}</p>
-      </div>
-    );
-  }
 }
