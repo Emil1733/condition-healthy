@@ -115,11 +115,7 @@ export async function generateMetadata(props: PageProps) {
   }
 }
 
-// This function tells Next.js which pages to build at build time (SSG)
-export async function generateStaticParams() {
-  return []; 
-}
-
+// Phase 13: Edge Cache Optimization (24 hours)
 export const revalidate = 86400;
 
 interface PageProps {
