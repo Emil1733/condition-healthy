@@ -90,7 +90,23 @@ export default async function TrialCityPage(props: PageProps) {
   const { data: trials, error: dbError } = await query.limit(50);
 
   if (dbError || !trials || trials.length === 0) {
-    return notFound();
+    return (
+      <div className="p-20 text-center">
+        <h1 className="text-2xl font-bold mb-4">Diagnostic: No Trials Found</h1>
+        <p className="text-gray-500 mb-8 max-w-xl mx-auto text-sm">
+          Slug: <code className="bg-gray-100 px-1">{slug}</code> <br/>
+          Condition: <code className="bg-gray-100 px-1">{condition}</code> <br/>
+          City: <code className="bg-gray-100 px-1">"{city}"</code> (Length: {city.length}) <br/>
+          State Name: <code className="bg-gray-100 px-1">{stateName}</code> <br/>
+          State Abbr: <code className="bg-gray-100 px-1">{stateAbbr}</code>
+        </p>
+        {dbError && <pre className="bg-red-50 p-4 rounded text-red-600 text-xs text-left max-w-2xl mx-auto overflow-auto">{JSON.stringify(dbError, null, 2)}</pre>}
+        <div className="mt-8 space-x-4">
+          <Link href="/trials" className="text-blue-600 underline">Back to Directory</Link>
+          <Link href={`/trials/${condition}`} className="text-blue-600 underline">Back to {condition} Hub</Link>
+        </div>
+      </div>
+    );
   }
 
   const activeTrials = trials;
