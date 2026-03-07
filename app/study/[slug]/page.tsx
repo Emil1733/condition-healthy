@@ -13,7 +13,7 @@ import { SITE_CONFIG } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const revalidate = 0; // Force cache invalidation on Vercel Edge
+export const revalidate = 0;
 
 interface PageProps {
   params: {
@@ -21,169 +21,82 @@ interface PageProps {
   };
 }
 
-// Helper to expand state abbreviations for UI display
-const getStateName = (abbr: string) => {
-  const states: Record<string, string> = {
-    AL: "Alabama",
-    AK: "Alaska",
-    AZ: "Arizona",
-    AR: "Arkansas",
-    CA: "California",
-    CO: "Colorado",
-    CT: "Connecticut",
-    DE: "Delaware",
-    FL: "Florida",
-    GA: "Georgia",
-    HI: "Hawaii",
-    ID: "Idaho",
-    IL: "Illinois",
-    IN: "Indiana",
-    IA: "Iowa",
-    KS: "Kansas",
-    KY: "Kentucky",
-    LA: "Louisiana",
-    ME: "Maine",
-    MD: "Maryland",
-    MA: "Massachusetts",
-    MI: "Michigan",
-    MN: "Minnesota",
-    MS: "Mississippi",
-    MO: "Missouri",
-    MT: "Montana",
-    NE: "Nebraska",
-    NV: "Nevada",
-    NH: "New Hampshire",
-    NJ: "New Jersey",
-    NM: "New Mexico",
-    NY: "New York",
-    NC: "North Carolina",
-    ND: "North Dakota",
-    OH: "Ohio",
-    OK: "Oklahoma",
-    OR: "Oregon",
-    PA: "Pennsylvania",
-    RI: "Rhode Island",
-    SC: "South Carolina",
-    SD: "South Dakota",
-    TN: "Tennessee",
-    TX: "Texas",
-    UT: "Utah",
-    VT: "Vermont",
-    VA: "Virginia",
-    WA: "Washington",
-    WV: "West Virginia",
-    WI: "Wisconsin",
-    WY: "Wyoming",
-  };
-  return states[abbr.toUpperCase()] || abbr.toUpperCase();
+const STATE_MAP: Record<string, string> = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas",
+  CA: "California", CO: "Colorado", CT: "Connecticut", DE: "Delaware",
+  FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho",
+  IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas",
+  KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi",
+  MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada",
+  NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+  NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma",
+  OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
+  SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+  VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
+  WI: "Wisconsin", WY: "Wyoming",
 };
 
+function parseSlug(slug: string) {
+  // Expected formats: "eczema_md" or "eczema_bethesda-md"
+  const underscoreIdx = slug.indexOf("_");
+  if (underscoreIdx === -1) return null;
+
+  const condition = slug.slice(0, underscoreIdx);
+  const locationPart = slug.slice(underscoreIdx + 1);
+
+  if (!condition || !locationPart) return null;
+
+  const parts = locationPart.split("-");
+  const stateAbbr = (parts.pop() || "").toUpperCase();
+  const city = parts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  const stateName = STATE_MAP[stateAbbr] || stateAbbr;
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
+
+  return { condition, city, stateAbbr, stateName, formattedCondition };
+}
+
 export async function generateMetadata(props: PageProps) {
-  const { slug } = props.params;
-  const parts = slug.split("_");
-  const condition = parts[0];
-  const cityState = parts[1];
-
-  if (!condition || !cityState) return { title: "Research Hub" };
-
-  const slugParts = cityState.split("-");
-  const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
-  
-  // If slugParts is empty, it means there was no city in the slug (e.g. "md", "nc").
-  // Prevent generating " " from empty arrays.
-  const city = slugParts.length > 0
-    ? slugParts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
-    : "";
-  const stateName = getStateName(stateAbbr);
-  const formattedCondition =
-    condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
-
+  const parsed = parseSlug(props.params.slug);
+  if (!parsed) return { title: "Research Hub" };
+  const { formattedCondition, city, stateAbbr, stateName } = parsed;
   const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
-
   return {
     title: `${formattedCondition} Clinical Trials in ${locationTitle} | ${SITE_CONFIG.brandingSuffix}`,
     description: `Find active ${formattedCondition} studies in ${locationTitle}. View eligibility, pay rates, and connect with top research facilities near you.`,
-    alternates: {
-      canonical: `${SITE_CONFIG.baseUrl}/study/${slug}`,
-    },
+    alternates: { canonical: `${SITE_CONFIG.baseUrl}/study/${props.params.slug}` },
   };
 }
 
 export default async function TrialCityPage(props: PageProps) {
   const { slug } = props.params;
+  const parsed = parseSlug(slug);
 
-  // 1. Parse Slug (e.g., migraine_wilmington-nc or eczema_md)
-  const parts = slug.split("_");
-  const condition = parts[0];
-  const cityState = parts[1];
+  if (!parsed) return notFound();
 
-  if (!condition || !cityState) return notFound();
+  const { condition, city, stateAbbr, stateName, formattedCondition } = parsed;
 
-  const slugParts = cityState.split("-");
-  const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
-  
-  // If slugParts is empty, it means there was no city in the slug (e.g. "md", "nc").
-  // Prevent generating " " from empty arrays.
-  const city = slugParts.length > 0 
-    ? slugParts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
-    : "";
-  const stateName = getStateName(stateAbbr);
-  const formattedCondition =
-    condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
-
-  // 2. Fetch Trials for this City/Condition or State/Condition
+  // Build query
   let query = supabase
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
     .ilike("status", "recruiting");
 
-  if (city) {
+  // City filter only when a city is present
+  if (city.trim()) {
     query = query.ilike("location_city", city);
   }
 
-  // Always filter by state to avoid cross-state city collisions (e.g. Springfield)
+  // State filter — match by full name OR abbreviation
   query = query.or(
-    `location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`,
+    `location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`
   );
 
-  const { data: trials, error: dbError } = await query.limit(50);
+  const { data: trials } = await query.limit(50);
+  const activeTrials = trials ?? [];
 
-  if (dbError || !trials || trials.length === 0) {
-    return (
-      <div className="p-20 text-center">
-        <h1 className="text-2xl font-bold mb-4">Diagnostic: No Trials Found</h1>
-        <p className="text-gray-500 mb-8 max-w-xl mx-auto text-sm">
-          Slug: <code className="bg-gray-100 px-1">{slug}</code> <br />
-          Condition: <code className="bg-gray-100 px-1">{condition}</code>{" "}
-          <br />
-          City: <code className="bg-gray-100 px-1">"{city}"</code> (Length:{" "}
-          {city.length}) <br />
-          State Name: <code className="bg-gray-100 px-1">{stateName}</code>{" "}
-          <br />
-          State Abbr: <code className="bg-gray-100 px-1">{stateAbbr}</code>
-        </p>
-        {dbError && (
-          <pre className="bg-red-50 p-4 rounded text-red-600 text-xs text-left max-w-2xl mx-auto overflow-auto">
-            {JSON.stringify(dbError, null, 2)}
-          </pre>
-        )}
-        <div className="mt-8 space-x-4">
-          <Link href="/trials" className="text-blue-600 underline">
-            Back to Directory
-          </Link>
-          <Link
-            href={`/trials/${condition}`}
-            className="text-blue-600 underline"
-          >
-            Back to {condition} Hub
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const activeTrials = trials;
+  const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
@@ -191,27 +104,15 @@ export default async function TrialCityPage(props: PageProps) {
       <section className="bg-white border-b border-gray-200 pt-8 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
-              Home
-            </Link>
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
             <ChevronRight className="w-4 h-4" />
-            <Link
-              href="/trials"
-              className="hover:text-blue-600 transition-colors"
-            >
-              All Trials
-            </Link>
+            <Link href="/trials" className="hover:text-blue-600 transition-colors">All Trials</Link>
             <ChevronRight className="w-4 h-4" />
-            <Link
-              href={`/trials/${condition}`}
-              className="hover:text-blue-600 transition-colors"
-            >
+            <Link href={`/trials/${condition}`} className="hover:text-blue-600 transition-colors">
               {formattedCondition}
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-gray-900 font-medium">
-              {city || stateAbbr} Hub
-            </span>
+            <span className="text-gray-900 font-medium">{locationTitle}</span>
           </nav>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -222,31 +123,22 @@ export default async function TrialCityPage(props: PageProps) {
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
                 {formattedCondition} Trials in{" "}
-                <span className="text-blue-600">
-                  {city || stateName}, {stateAbbr}
-                </span>
+                <span className="text-blue-600">{locationTitle}</span>
               </h1>
               <p className="mt-4 text-gray-500 max-w-2xl leading-relaxed">
-                Currently tracking {activeTrials.length} active clinical
-                research {activeTrials.length === 1 ? "study" : "studies"} in
-                the {city || stateName} area. Participants may receive
-                compensations for time and travel.
+                {activeTrials.length > 0
+                  ? `Currently tracking ${activeTrials.length} active clinical research ${activeTrials.length === 1 ? "study" : "studies"} in the ${locationTitle} area. Participants may receive compensations for time and travel.`
+                  : `No active clinical trials found in ${locationTitle} at this time. Check back soon or explore nearby areas.`}
               </p>
             </div>
             <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
               <div className="text-center px-4 border-r border-gray-200">
-                <div className="text-2xl font-black text-gray-900">
-                  {activeTrials.length}
-                </div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  Active
-                </div>
+                <div className="text-2xl font-black text-gray-900">{activeTrials.length}</div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active</div>
               </div>
               <div className="text-center px-4">
                 <div className="text-2xl font-black text-blue-600">Free</div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  Medical Care
-                </div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Medical Care</div>
               </div>
             </div>
           </div>
@@ -263,55 +155,45 @@ export default async function TrialCityPage(props: PageProps) {
               Available {formattedCondition} Studies
             </h2>
 
-            {activeTrials.map((study) => (
-              <StudyCard
-                key={study.nct_id}
-                nctId={study.nct_id}
-                title={study.title}
-                status={study.status}
-                condition={study.condition}
-                city={study.location_city}
-                state={study.location_state}
-                showLocation={false}
-              />
-            ))}
+            {activeTrials.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+                <Activity className="w-10 h-10 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg font-semibold">No active trials at this time</p>
+                <p className="text-gray-400 text-sm mt-2">Try searching in a nearby city or state.</p>
+                <Link href={`/trials/${condition}`} className="mt-6 inline-block text-blue-600 font-bold hover:underline">
+                  View all {formattedCondition} trials →
+                </Link>
+              </div>
+            ) : (
+              activeTrials.map((study) => (
+                <StudyCard
+                  key={study.nct_id}
+                  nctId={study.nct_id}
+                  title={study.title}
+                  status={study.status}
+                  condition={study.condition}
+                  city={study.location_city}
+                  state={study.location_state}
+                  showLocation={false}
+                />
+              ))
+            )}
           </div>
 
-          {/* Sidebar / Info */}
+          {/* Sidebar */}
           <div className="space-y-8">
             <div className="bg-blue-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <ShieldCheck className="w-24 h-24" />
               </div>
-              <h3 className="text-xl font-bold mb-4 relative z-10">
-                How it works
-              </h3>
+              <h3 className="text-xl font-bold mb-4 relative z-10">How it works</h3>
               <ul className="space-y-4 relative z-10">
-                <li className="flex gap-3">
-                  <div className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
-                    1
-                  </div>
-                  <p className="text-sm text-blue-100 italic">
-                    Select a study that matches your condition and location.
-                  </p>
-                </li>
-                <li className="flex gap-3">
-                  <div className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
-                    2
-                  </div>
-                  <p className="text-sm text-blue-100 italic">
-                    Review the eligibility requirements and click "View Full
-                    Details".
-                  </p>
-                </li>
-                <li className="flex gap-3">
-                  <div className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
-                    3
-                  </div>
-                  <p className="text-sm text-blue-100 italic">
-                    Contact the research site directly to start your screening.
-                  </p>
-                </li>
+                {["Select a study that matches your condition and location.", 'Review the eligibility requirements and click "View Full Details".', "Contact the research site directly to start your screening."].map((step, i) => (
+                  <li key={i} className="flex gap-3">
+                    <div className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">{i + 1}</div>
+                    <p className="text-sm text-blue-100 italic">{step}</p>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -321,41 +203,28 @@ export default async function TrialCityPage(props: PageProps) {
                 Patient Compensation
               </h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Most clinical trials in {city || stateName} provide compensation
-                for time and travel, often ranging from{" "}
-                <strong>$500 to $3,000</strong> per study. Additionally,
-                participants receive study-related medical care and medications
-                at no cost.
+                Most clinical trials in {locationTitle} provide compensation for time and travel, often ranging from{" "}
+                <strong>$500 to $3,000</strong> per study. Additionally, participants receive study-related medical care and medications at no cost.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust & Safety Banner */}
+      {/* Trust Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <div className="bg-gray-100 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-200/50">
           <div className="flex items-center gap-4 text-gray-600">
             <ShieldCheck className="w-8 h-8 text-orange-400" />
             <div>
-              <div className="font-bold text-gray-900 uppercase tracking-widest text-[10px]">
-                Security Verified
-              </div>
-              <div className="text-sm">
-                All trials follow strict FDA-compliant safety protocols.
-              </div>
+              <div className="font-bold text-gray-900 uppercase tracking-widest text-[10px]">Security Verified</div>
+              <div className="text-sm">All trials follow strict FDA-compliant safety protocols.</div>
             </div>
           </div>
           <div className="flex items-center gap-8 opacity-40 grayscale filter">
-            <span className="text-[10px] font-black tracking-widest">
-              NIH DATA
-            </span>
-            <span className="text-[10px] font-black tracking-widest">
-              IRB APPROVED
-            </span>
-            <span className="text-[10px] font-black tracking-widest">
-              HIPAA COMPLIANT
-            </span>
+            <span className="text-[10px] font-black tracking-widest">NIH DATA</span>
+            <span className="text-[10px] font-black tracking-widest">IRB APPROVED</span>
+            <span className="text-[10px] font-black tracking-widest">HIPAA COMPLIANT</span>
           </div>
         </div>
       </section>
