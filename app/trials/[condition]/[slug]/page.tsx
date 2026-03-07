@@ -12,8 +12,7 @@ import QuizTrigger from "@/components/QuizTrigger";
 import MedicalByline from "@/components/MedicalByline";
 
 import { SITE_CONFIG } from "@/lib/constants";
-
-export const runtime = "edge";
+import { unstable_noStore } from "next/cache";
 
 // Helper to identify State vs City
 const isStateCode = (slug: string) => slug.length === 2 && /^[a-z]{2}$/i.test(slug);
@@ -100,6 +99,7 @@ interface PageProps {
 }
 
 export default async function TrialPage(props: PageProps) {
+  unstable_noStore();
   const params = await props.params;
   const { condition, slug } = params;
   const isState = isStateCode(slug);

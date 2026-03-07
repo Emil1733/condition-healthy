@@ -3,7 +3,6 @@ import { supabaseAdmin } from "@/lib/supabase.admin";
 import { MetadataRoute } from "next";
 
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.baseUrl;

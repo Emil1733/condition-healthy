@@ -5,8 +5,7 @@ import { Activity, MapPin, ChevronRight, ShieldCheck } from "lucide-react";
 import Script from "next/script";
 import StudyCard from "@/components/StudyCard";
 import { SITE_CONFIG } from "@/lib/constants";
-
-export const runtime = "edge";
+import { unstable_noStore } from "next/cache";
 
 // Phase 13: Edge Cache Optimization (24 hours)
 export const revalidate = 86400;
@@ -32,6 +31,7 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function ConditionHubPage(props: PageProps) {
+  unstable_noStore();
   const params = await props.params;
   const { condition } = params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
