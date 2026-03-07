@@ -180,7 +180,7 @@ export default async function ConditionHubPage(props: PageProps) {
               {uniqueStates.map(state => (
                   <Link 
                       key={state} 
-                      href={`/trials/${condition}/${getStateAbbr(state)}`}
+                      href={`/study/${condition}_${getStateAbbr(state)}`}
                       className="bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-sm hover:border-blue-300 hover:text-blue-600 hover:shadow-md transition-all font-bold text-gray-700"
                   >
                       {state}
@@ -200,7 +200,7 @@ export default async function ConditionHubPage(props: PageProps) {
               return (
                 <Link 
                    key={citySlug}
-                   href={`/trials/${condition}/${citySlug}`}
+                   href={`/study/${condition}_${citySlug}`}
                    className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all flex items-center justify-between"
                 >
                     <div className="flex items-center gap-4">

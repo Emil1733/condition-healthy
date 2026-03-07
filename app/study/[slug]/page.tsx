@@ -10,7 +10,6 @@ export const runtime = 'nodejs';
 
 interface PageProps {
   params: {
-    condition: string;
     slug: string;
   };
 }
@@ -33,36 +32,42 @@ const getStateName = (abbr: string) => {
 };
 
 export async function generateMetadata(props: PageProps) {
-  const { condition, slug } = props.params;
-  const slugParts = slug.split("-");
+  const { slug } = props.params;
+  const [condition, cityState] = slug.split("_");
+  if (!condition || !cityState) return { title: "Clinical Trial Hub" };
+
+  const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
   const city = slugParts.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
 
   return {
     title: `${formattedCondition} Clinical Trials in ${city}, ${stateAbbr} | ${SITE_CONFIG.brandingSuffix}`,
     description: `Find active ${formattedCondition} studies in ${city}, ${stateAbbr}. View eligibility, pay rates, and connect with top research facilities near you.`,
     alternates: {
-      canonical: `${SITE_CONFIG.baseUrl}/trials/${condition}/${slug}`,
+      canonical: `${SITE_CONFIG.baseUrl}/study/${slug}`,
     }
   };
 }
 
 export default async function TrialCityPage(props: PageProps) {
-  const { condition, slug } = props.params;
+  const { slug } = props.params;
   
-  // 1. Parse Slug (e.g., wilmington-nc)
-  const slugParts = slug.split("-");
+  // 1. Parse Slug (e.g., migraine_wilmington-nc)
+  const [condition, cityState] = slug.split("_");
+  if (!condition || !cityState) return notFound();
+
+  const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
   const city = slugParts.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
   const stateName = getStateName(stateAbbr);
-  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
 
   // 2. Fetch Trials for this City/Condition
   let query = supabase
     .from("studies")
     .select("*")
-    .ilike("condition", `%${condition}%`)
+    .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
     .ilike("status", "recruiting");
 
   if (city) {
@@ -91,7 +96,7 @@ export default async function TrialCityPage(props: PageProps) {
                 <ChevronRight className="w-4 h-4" />
                 <Link href={`/trials/${condition}`} className="hover:text-blue-600 transition-colors">{formattedCondition}</Link>
                 <ChevronRight className="w-4 h-4" />
-                <span className="text-gray-900 font-medium">{city}, {stateAbbr}</span>
+                <span className="text-gray-900 font-medium">{city || stateAbbr} Hub</span>
             </nav>
 
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -101,10 +106,10 @@ export default async function TrialCityPage(props: PageProps) {
                         Local Research Hub
                     </div>
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
-                        {formattedCondition} Trials in <span className="text-blue-600">{city}, {stateAbbr}</span>
+                        {formattedCondition} Trials in <span className="text-blue-600">{city || stateName}, {stateAbbr}</span>
                     </h1>
                     <p className="mt-4 text-gray-500 max-w-2xl leading-relaxed">
-                        Currently tracking {activeTrials.length} active clinical research {activeTrials.length === 1 ? 'study' : 'studies'} in the {city} area. 
+                        Currently tracking {activeTrials.length} active clinical research {activeTrials.length === 1 ? 'study' : 'studies'} in the {city || stateName} area. 
                         Participants may receive compensations for time and travel.
                     </p>
                 </div>
@@ -176,7 +181,7 @@ export default async function TrialCityPage(props: PageProps) {
                         Patient Compensation
                       </h3>
                       <p className="text-sm text-gray-500 leading-relaxed">
-                          Most clinical trials in {city} provide compensation for time and travel, often ranging from <strong>$500 to $3,000</strong> per study. Additionally, participants receive study-related medical care and medications at no cost.
+                          Most clinical trials in {city || stateName} provide compensation for time and travel, often ranging from <strong>$500 to $3,000</strong> per study. Additionally, participants receive study-related medical care and medications at no cost.
                       </p>
                   </div>
               </div>

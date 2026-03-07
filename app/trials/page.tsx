@@ -122,7 +122,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
             {activeConditions.map((cond) => (
               <Link 
                 key={cond.slug}
-                href={locationQuery ? `/trials/${cond.slug}/${locationQuery.toLowerCase().replace(/ /g, '-')}` : `/trials/${cond.slug}`}
+                href={locationQuery ? `/study/${cond.slug}_${locationQuery.toLowerCase().replace(/ /g, '-')}` : `/trials/${cond.slug}`}
                 className="group bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-xl transition-all relative overflow-hidden"
               >
                 <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50/50 to-transparent rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform`} />
