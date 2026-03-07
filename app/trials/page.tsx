@@ -192,6 +192,7 @@ export default async function TrialsDirectoryPage(props: PageProps) {
         </div>
       </section>
     </main>
+    );
   } catch (err: any) {
     return (
       <div style={{ padding: '2rem', fontFamily: 'monospace', color: 'red' }}>
