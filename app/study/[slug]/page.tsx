@@ -71,16 +71,16 @@ export default async function TrialCityPage(props: PageProps) {
 
   // 2. Fetch Trials for this City/Condition
   // Using a simplified query to ensure we find matches even if state naming is inconsistent (abbr vs full)
-  const { data: trials, error } = await supabase
+  const query = supabase
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
     .ilike("location_city", city)
     .ilike("status", "recruiting")
     .limit(50); // Be generous
+  const { data: trials, error: dbError } = await query;
 
-  if (error || !trials || trials.length === 0) {
-    // If exact city fails, attempt a broader check or return not found
+  if (dbError || !trials || trials.length === 0) {
     return notFound();
   }
 
