@@ -171,11 +171,11 @@ export default async function TrialPage(props: PageProps) {
         <section className="bg-white border-b border-gray-200 pt-8 pb-12 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex items-center gap-2 text-sm text-gray-400 mb-12">
-                <Link href="/" className="hover:text-blue-600">Home</Link>
+                <Link href="/" prefetch={false} className="hover:text-blue-600">Home</Link>
                 <ChevronRight className="w-4 h-4" />
-                <Link href="/trials" className="hover:text-blue-600">All Trials</Link>
+                <Link href="/trials" prefetch={false} className="hover:text-blue-600">All Trials</Link>
                 <ChevronRight className="w-4 h-4" />
-                <Link href={`/trials/${condition}`} className="hover:text-blue-600">{formattedCondition} Trials</Link>
+                <Link href={`/trials/${condition}`} prefetch={false} className="hover:text-blue-600">{formattedCondition} Trials</Link>
                 <ChevronRight className="w-4 h-4" />
                 <span className="text-gray-900 font-medium">{stateName} Hub</span>
             </nav>
@@ -201,6 +201,7 @@ export default async function TrialPage(props: PageProps) {
                                 <Link 
                                     key={city.slug} 
                                     href={`/trials/${condition}/${city.slug}`}
+                                    prefetch={false}
                                     className="bg-white p-4 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700"
                                 >
                                     {city.city}
@@ -399,13 +400,13 @@ export default async function TrialPage(props: PageProps) {
           
           {/* UI Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs font-medium tracking-wide text-slate-400 mb-12 uppercase">
-              <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+              <Link href="/" prefetch={false} className="hover:text-blue-600 transition-colors">Home</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <Link href="/trials" className="hover:text-blue-600 transition-colors">All Trials</Link>
+              <Link href="/trials" prefetch={false} className="hover:text-blue-600 transition-colors">All Trials</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <Link href={`/trials/${condition}`} className="hover:text-blue-600 transition-colors">{formattedCondition} Trials</Link>
+              <Link href={`/trials/${condition}`} prefetch={false} className="hover:text-blue-600 transition-colors">{formattedCondition} Trials</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} className="hover:text-blue-600 transition-colors">{currentState} Hub</Link>
+              <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} prefetch={false} className="hover:text-blue-600 transition-colors">{getFullStateName(currentState)} Hub</Link>
               <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
               <span className="text-slate-800 font-bold">{formattedCity}</span>
           </nav>
@@ -651,7 +652,7 @@ export default async function TrialPage(props: PageProps) {
                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Browse by Condition</h4>
                      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-8">
                         {['Psoriasis', 'Diabetes', 'Migraine', 'Eczema', 'Arthritis'].map(cond => (
-                          <Link key={cond} href={`/trials/${cond.toLowerCase()}/${slug}`} className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                          <Link key={cond} href={`/trials/${cond.toLowerCase()}/${slug}`} prefetch={false} className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
                             {cond} in {formattedCity}
                           </Link>
                         ))}
@@ -659,13 +660,13 @@ export default async function TrialPage(props: PageProps) {
 
                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Nearby {formattedCondition} Trials</h4>
                      <div className="flex flex-col gap-2 mb-8">
-                        <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl text-sm font-bold border border-blue-100 hover:bg-blue-100 transition-all flex items-center justify-between">
-                            View All {currentState} Trials
+                        <Link href={`/trials/${condition}/${currentState.toLowerCase()}`} prefetch={false} className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl text-sm font-bold border border-blue-100 hover:bg-blue-100 transition-all flex items-center justify-between">
+                            View All {getFullStateName(currentState)} Trials
                             <ChevronRight className="w-4 h-4" />
                         </Link>
                         <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2">
                            {nearbyLocations?.map(loc => (
-                             <Link key={loc.slug} href={`/trials/${condition}/${loc.slug}`} className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                             <Link key={loc.slug} href={`/trials/${condition}/${loc.slug}`} prefetch={false} className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
                                {loc.city}
                              </Link>
                            ))}
