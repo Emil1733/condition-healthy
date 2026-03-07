@@ -5,7 +5,6 @@ import Link from "next/link";
 import TrustBar from "@/components/TrustBar";
 import Script from "next/script";
 import { supabase } from "@/lib/supabase.custom";
-import { unstable_cache } from "next/cache";
 
 export const metadata = {
   title: `Browse Clinical Trials by Medical Condition | ${SITE_CONFIG.brandingSuffix}`,
@@ -30,27 +29,23 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-// Phase 13: Cache the heavy aggregate count queries
-const getConditionStats = unstable_cache(
-  async () => {
-    const conditionsToCheck = Object.keys(CONDITION_META);
-    return Promise.all(conditionsToCheck.map(async (slug) => {
-      const { count } = await supabase
-        .from("studies")
-        .select("*", { count: 'exact', head: true })
-        .ilike("condition", `%${slug}%`)
-        .ilike("status", "recruiting");
-      
-      return {
-        slug,
-        ...CONDITION_META[slug],
-        count: count || 0
-      };
-    }));
-  },
-  ['trials-directory-stats'],
-  { revalidate: 86400 } // Cache for 24 hours
-);
+// Phase 13: Standard async data fetch. Unstable cache breaks Cloudflare edge workers.
+const getConditionStats = async () => {
+  const conditionsToCheck = Object.keys(CONDITION_META);
+  return Promise.all(conditionsToCheck.map(async (slug) => {
+    const { count } = await supabase
+      .from("studies")
+      .select("*", { count: 'exact', head: true })
+      .ilike("condition", `%${slug}%`)
+      .ilike("status", "recruiting");
+    
+    return {
+      slug,
+      ...CONDITION_META[slug],
+      count: count || 0
+    };
+  }));
+};
 
 export default async function TrialsDirectoryPage(props: PageProps) {
   try {
