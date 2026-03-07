@@ -84,8 +84,8 @@ export default async function TrialCityPage(props: PageProps) {
   }
 
   // Always filter by state to avoid cross-state city collisions (e.g. Springfield)
-  // We use .or() to match either full name or abbreviation
-  query = query.or(`location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`);
+  // We use double quotes to handle state names with spaces (e.g. "North Carolina")
+  query = query.or(`location_state.ilike."${stateName}",location_state.ilike."${stateAbbr}"`);
 
   const { data: trials, error: dbError } = await query.limit(50);
 
