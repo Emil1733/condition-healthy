@@ -27,12 +27,12 @@ const getStateAbbr = (stateName: string) => {
 
 interface PageProps {
   params: {
-    condition: string;
+    trialCondition: string;
   };
 }
 
 export async function generateMetadata(props: PageProps) {
-  const { condition } = props.params;
+  const { trialCondition: condition } = props.params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   return {
@@ -45,7 +45,7 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function ConditionHubPage(props: PageProps) {
-  const { condition } = props.params;
+  const { trialCondition: condition } = props.params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   // 1. Fetch cities that have trials for this condition

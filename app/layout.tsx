@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ConditionHealthy.com | Clinical Trial Finder",
   description: "Find high-paying clinical research studies and advanced treatment options near you.",
-  // metadataBase: new URL(SITE_CONFIG.baseUrl),
+  metadataBase: new URL(SITE_CONFIG.baseUrl),
   alternates: {
     canonical: "/",
   },
