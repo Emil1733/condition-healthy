@@ -88,9 +88,12 @@ export async function generateMetadata(props: PageProps) {
 
   const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
-  const city = slugParts
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  
+  // If slugParts is empty, it means there was no city in the slug (e.g. "md", "nc").
+  // Prevent generating " " from empty arrays.
+  const city = slugParts.length > 0
+    ? slugParts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+    : "";
   const stateName = getStateName(stateAbbr);
   const formattedCondition =
     condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
@@ -118,9 +121,12 @@ export default async function TrialCityPage(props: PageProps) {
 
   const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
-  const city = slugParts
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  
+  // If slugParts is empty, it means there was no city in the slug (e.g. "md", "nc").
+  // Prevent generating " " from empty arrays.
+  const city = slugParts.length > 0 
+    ? slugParts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+    : "";
   const stateName = getStateName(stateAbbr);
   const formattedCondition =
     condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");

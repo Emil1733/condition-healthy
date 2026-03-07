@@ -1,35 +1,28 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-primary: #0056b3; /* Trust Blue */
-  --color-secondary: #28a745; /* Money Green */
-  --font-sans: var(--font-inter); /* Links to Next.js Font */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-primary: #0056b3;
+  --color-secondary: #28a745;
 }
 
-/* Custom Utilities if needed */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* 
-   Fix for the error: "Cannot apply unknown utility class border-gray-200"
-   We apply this manually instead of using @apply 
-*/
 * {
   border-color: #e5e7eb; /* equivalent to gray-200 */
 }
