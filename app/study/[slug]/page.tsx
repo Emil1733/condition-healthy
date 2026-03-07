@@ -42,11 +42,14 @@ export async function generateMetadata(props: PageProps) {
   const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
   const city = slugParts.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  const stateName = getStateName(stateAbbr);
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
 
+  const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
+
   return {
-    title: `${formattedCondition} Clinical Trials in ${city}, ${stateAbbr} | ${SITE_CONFIG.brandingSuffix}`,
-    description: `Find active ${formattedCondition} studies in ${city}, ${stateAbbr}. View eligibility, pay rates, and connect with top research facilities near you.`,
+    title: `${formattedCondition} Clinical Trials in ${locationTitle} | ${SITE_CONFIG.brandingSuffix}`,
+    description: `Find active ${formattedCondition} studies in ${locationTitle}. View eligibility, pay rates, and connect with top research facilities near you.`,
     alternates: {
       canonical: `${SITE_CONFIG.baseUrl}/study/${slug}`,
     }
@@ -56,7 +59,7 @@ export async function generateMetadata(props: PageProps) {
 export default async function TrialCityPage(props: PageProps) {
   const { slug } = props.params;
   
-  // 1. Parse Slug (e.g., migraine_wilmington-nc)
+  // 1. Parse Slug (e.g., migraine_wilmington-nc or eczema_md)
   const parts = slug.split("_");
   const condition = parts[0];
   const cityState = parts[1];
@@ -69,28 +72,28 @@ export default async function TrialCityPage(props: PageProps) {
   const stateName = getStateName(stateAbbr);
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
 
-  // 2. Fetch Trials for this City/Condition
-  // Using a simplified query to ensure we find matches even if state naming is inconsistent (abbr vs full)
-  const query = supabase
+  // 2. Fetch Trials for this City/Condition or State/Condition
+  let query = supabase
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
-    .ilike("location_city", city)
-    .ilike("status", "recruiting")
-    .limit(50); // Be generous
-  const { data: trials, error: dbError } = await query;
+    .ilike("status", "recruiting");
+
+  if (city) {
+    query = query.ilike("location_city", city);
+  }
+
+  // Always filter by state to avoid cross-state city collisions (e.g. Springfield)
+  // We use .or() to match either full name or abbreviation
+  query = query.or(`location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`);
+
+  const { data: trials, error: dbError } = await query.limit(50);
 
   if (dbError || !trials || trials.length === 0) {
     return notFound();
   }
 
-  // Double check state if there are many matches (e.g. Springfield IL vs Springfield MO)
-  const filteredTrials = trials.filter(t => 
-    t.location_state?.toLowerCase() === stateName.toLowerCase() || 
-    t.location_state?.toLowerCase() === stateAbbr.toLowerCase()
-  );
-
-  const activeTrials = filteredTrials.length > 0 ? filteredTrials : trials;
+  const activeTrials = trials;
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
