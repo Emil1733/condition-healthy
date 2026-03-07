@@ -7,6 +7,24 @@ import StudyCard from "@/components/StudyCard";
 import { SITE_CONFIG } from "@/lib/constants";
 import { unstable_noStore } from "next/cache";
 
+// Helper to correctly map full DB state names to 2-letter slugs avoiding URI encoding crashes
+const getStateAbbr = (stateName: string) => {
+  const states: Record<string, string> = {
+    'alabama': 'al', 'alaska': 'ak', 'arizona': 'az', 'arkansas': 'ar', 'california': 'ca',
+    'colorado': 'co', 'connecticut': 'ct', 'delaware': 'de', 'florida': 'fl', 'georgia': 'ga',
+    'hawaii': 'hi', 'idaho': 'id', 'illinois': 'il', 'indiana': 'in', 'iowa': 'ia',
+    'kansas': 'ks', 'kentucky': 'ky', 'louisiana': 'la', 'maine': 'me', 'maryland': 'md',
+    'massachusetts': 'ma', 'michigan': 'mi', 'minnesota': 'mn', 'mississippi': 'ms', 'missouri': 'mo',
+    'montana': 'mt', 'nebraska': 'ne', 'nevada': 'nv', 'new hampshire': 'nh', 'new jersey': 'nj',
+    'new mexico': 'nm', 'new york': 'ny', 'north carolina': 'nc', 'north dakota': 'nd', 'ohio': 'oh',
+    'oklahoma': 'ok', 'oregon': 'or', 'pennsylvania': 'pa', 'rhode island': 'ri', 'south carolina': 'sc',
+    'south dakota': 'sd', 'tennessee': 'tn', 'texas': 'tx', 'utah': 'ut', 'vermont': 'vt',
+    'virginia': 'va', 'washington': 'wa', 'west virginia': 'wv', 'wisconsin': 'wi', 'wyoming': 'wy',
+    'district of columbia': 'dc'
+  };
+  return states[stateName.toLowerCase()] || stateName.toLowerCase();
+};
+
 // Phase 13: Edge Cache Optimization (24 hours)
 export const revalidate = 86400;
 
@@ -59,7 +77,8 @@ export default async function ConditionHubPage(props: PageProps) {
   const cityCounts = cityData.reduce((acc: Record<string, { city: string, state: string, count: number }>, curr) => {
     if (!curr.location_city) return acc;
     const citySlug = curr.location_city.toLowerCase().replace(/ /g, "-");
-    const key = `${citySlug}-${curr.location_state?.toLowerCase() || 'tx'}`;
+    const stateAbbr = getStateAbbr(curr.location_state || 'tx');
+    const key = `${citySlug}-${stateAbbr}`;
     
     if (!acc[key]) {
       acc[key] = { 
@@ -167,7 +186,7 @@ export default async function ConditionHubPage(props: PageProps) {
               {uniqueStates.map(state => (
                   <Link 
                       key={state} 
-                      href={`/trials/${condition}/${state.toLowerCase()}`}
+                      href={`/trials/${condition}/${getStateAbbr(state)}`}
                       className="bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-sm hover:border-blue-300 hover:text-blue-600 hover:shadow-md transition-all font-bold text-gray-700"
                   >
                       {state}
@@ -183,7 +202,7 @@ export default async function ConditionHubPage(props: PageProps) {
          </h2>
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedCities.map((item) => {
-              const citySlug = `${item.city.toLowerCase().replace(/ /g, "-")}-${item.state.toLowerCase()}`;
+              const citySlug = `${item.city.toLowerCase().replace(/ /g, "-")}-${getStateAbbr(item.state)}`;
               return (
                 <Link 
                    key={citySlug}

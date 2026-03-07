@@ -17,6 +17,24 @@ import { unstable_noStore } from "next/cache";
 // Helper to identify State vs City
 const isStateCode = (slug: string) => slug.length === 2 && /^[a-z]{2}$/i.test(slug);
 
+// Helper to expand 2 letter state codes back to full state names for reliable database filtering
+const getFullStateName = (abbr: string) => {
+  const states: Record<string, string> = {
+    'al': 'Alabama', 'ak': 'Alaska', 'az': 'Arizona', 'ar': 'Arkansas', 'ca': 'California',
+    'co': 'Colorado', 'ct': 'Connecticut', 'de': 'Delaware', 'fl': 'Florida', 'ga': 'Georgia',
+    'hi': 'Hawaii', 'id': 'Idaho', 'il': 'Illinois', 'in': 'Indiana', 'ia': 'Iowa',
+    'ks': 'Kansas', 'ky': 'Kentucky', 'la': 'Louisiana', 'me': 'Maine', 'md': 'Maryland',
+    'ma': 'Massachusetts', 'mi': 'Michigan', 'mn': 'Minnesota', 'ms': 'Mississippi', 'mo': 'Missouri',
+    'mt': 'Montana', 'ne': 'Nebraska', 'nv': 'Nevada', 'nh': 'New Hampshire', 'nj': 'New Jersey',
+    'nm': 'New Mexico', 'ny': 'New York', 'nc': 'North Carolina', 'nd': 'North Dakota', 'oh': 'Ohio',
+    'ok': 'Oklahoma', 'or': 'Oregon', 'pa': 'Pennsylvania', 'ri': 'Rhode Island', 'sc': 'South Carolina',
+    'sd': 'South Dakota', 'tn': 'Tennessee', 'tx': 'Texas', 'ut': 'Utah', 'vt': 'Vermont',
+    'va': 'Virginia', 'wa': 'Washington', 'wv': 'West Virginia', 'wi': 'Wisconsin', 'wy': 'Wyoming',
+    'dc': 'District of Columbia'
+  };
+  return states[abbr.toLowerCase()] || abbr.toUpperCase();
+};
+
 // Elite SEO: Dynamic Metadata Generation
 export async function generateMetadata(props: PageProps) {
   const params = await props.params;
@@ -125,12 +143,13 @@ export default async function TrialPage(props: PageProps) {
       .order('city', { ascending: true });
 
     // Fetch elite studies for the state
+    const fullStateNameMatch = getFullStateName(stateName);
     const { data: stateStudies } = await supabase
       .from("studies")
       .select("*")
       .ilike("condition", `%${condition}%`)
       .ilike("status", "recruiting")
-      .ilike("location_state", `%${stateName}%`)
+      .ilike("location_state", `%${fullStateNameMatch}%`)
       .limit(5);
 
     return (
@@ -149,10 +168,10 @@ export default async function TrialPage(props: PageProps) {
 
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
-                {formattedCondition} Clinical Trials in <span className="text-blue-700">{stateName}</span>
+                {formattedCondition} Clinical Trials in <span className="text-blue-700">{getFullStateName(stateName)}</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                {pageContent?.intro_text || `Exploring modern treatment options for ${formattedCondition} across ${stateName}. Our network connects patients in ${stateName} with clinical research studies offering specialized care and compensation.`}
+                {pageContent?.intro_text || `Exploring modern treatment options for ${formattedCondition} across ${getFullStateName(stateName)}. Our network connects patients with clinical research studies offering specialized care and compensation.`}
               </p>
             </div>
           </div>
@@ -180,7 +199,7 @@ export default async function TrialPage(props: PageProps) {
                 <div className="space-y-8">
                     <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl">
                         <h3 className="font-bold text-lg mb-2">Check State Eligibility</h3>
-                        <p className="text-blue-100 text-sm mb-6">See if you qualify for active {formattedCondition} studies in {stateName}.</p>
+                        <p className="text-blue-100 text-sm mb-6">See if you qualify for active {formattedCondition} studies in {getFullStateName(stateName)}.</p>
                         <QuizTrigger className="w-full bg-white text-blue-600 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors">
                             Start Eligibility Quiz
                         </QuizTrigger>
@@ -219,12 +238,13 @@ export default async function TrialPage(props: PageProps) {
 
   // Tier 2: State Match (if city didn't fill the 3 slots)
   if (finalStudies.length < 3) {
+    const fullStateNameMatch = getFullStateName(locationData?.state || currentStateAbbr);
     const { data: stateStudies } = await supabase
       .from("studies")
       .select("*")
       .ilike("condition", `%${condition}%`)
       .ilike("status", "recruiting")
-      .ilike("location_state", `%${locationData?.state || ""}%`)
+      .ilike("location_state", `%${fullStateNameMatch}%`)
       .neq("location_city", formattedCity) // Don't repeat Tier 1
       .limit(3 - finalStudies.length);
     
