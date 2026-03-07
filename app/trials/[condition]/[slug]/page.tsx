@@ -66,6 +66,10 @@ export async function generateMetadata(props: PageProps) {
   }
 
   // City Logic (Existing)
+  const slugParts = slug.split('-');
+  const currentStateAbbr = slugParts.length > 1 ? slugParts.pop()?.toUpperCase() || "TX" : "TX";
+  const formattedCity = slugParts.length > 0 ? slugParts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : slug;
+  
   const { data: locationData } = await supabase
     .from("locations")
     .select("*")
@@ -78,15 +82,16 @@ export async function generateMetadata(props: PageProps) {
     .eq("path_slug", `${condition}/${slug}`)
     .single();
 
-  const { count: localStudyCount } = await supabase
+  const countRaw = await supabase
     .from("studies")
     .select("nct_id", { count: 'exact', head: true })
     .ilike("condition", `%${condition}%`)
     .ilike("status", "recruiting")
-    .ilike("location_city", slug.replace(/-/g, ' '));
+    .ilike("location_city", formattedCity);
+    
+  const localStudyCount = countRaw.count || 0;
   
-  const shouldIndex = !!pageContent || (localStudyCount || 0) > 0;
-  const formattedCity = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  const shouldIndex = !!pageContent || localStudyCount > 0;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   return {
@@ -214,8 +219,9 @@ export default async function TrialPage(props: PageProps) {
   // ---------------------------------------------------------
   // City Logic
   // ---------------------------------------------------------
-  const formattedCity = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  const currentStateAbbr = slug.split('-').pop()?.toUpperCase() || "TX";
+  const slugParts = slug.split('-');
+  const currentStateAbbr = slugParts.length > 1 ? slugParts.pop()?.toUpperCase() || "TX" : "TX";
+  const formattedCity = slugParts.length > 0 ? slugParts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : slug;
   
   // 1. Fetch Location Data
   const { data: locationData } = await supabase
@@ -264,7 +270,8 @@ export default async function TrialPage(props: PageProps) {
     if (fallbackStudies) finalStudies = [...finalStudies, ...fallbackStudies];
   }
 
-  const studies = finalStudies;
+  // CRITICAL FIX: Ensure studies is NEVER undefined/null before passing down to the UI
+  const studies = finalStudies || [];
 
   // 4. Fetch Nearby Locations (for SEO linking)
   const currentState = locationData?.state || currentStateAbbr;
@@ -359,7 +366,7 @@ export default async function TrialPage(props: PageProps) {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "mainEntity": (pageContent?.local_faq as any[] || [
+          "mainEntity": ((pageContent?.local_faq && Array.isArray(pageContent.local_faq) ? pageContent.local_faq : null) as any[] || [
             { q: "Is travel compensation available?", a: "Yes, many trials in the area provide stipends for travel expenses." },
             { q: "Do I need insurance?", a: "No, all study-related care and medication are provided at no cost." },
             { q: "Can I keep my current doctor?", a: "Absolutely. Study participation is a supplemental care option." }
@@ -614,11 +621,11 @@ export default async function TrialPage(props: PageProps) {
                <div className="space-y-8 lg:bg-white lg:p-8 lg:rounded-3xl lg:border lg:border-slate-100 lg:shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] lg:self-start sticky top-24">
                  <h2 className="text-xl font-bold text-slate-900 tracking-tight">Patient FAQ: {formattedCity}</h2>
                  <div className="space-y-6">
-                   {(pageContent?.local_faq as { q: string; a: string }[] || [
+                   {((pageContent?.local_faq && Array.isArray(pageContent.local_faq) ? pageContent.local_faq : null) as { q: string; a: string }[] || [
                      { q: "Is travel compensation available?", a: "Yes, many trials in the area provide stipends for travel expenses." },
                      { q: "Do I need insurance?", a: "No, all study-related care and medication are provided at no cost." },
                      { q: "Can I keep my current doctor?", a: "Absolutely. Study participation is a supplemental care option." }
-                   ]).map((faq, i) => (
+                   ]).map((faq: any, i: number) => (
                      <div key={i} className="group pb-4 border-b border-slate-100 last:border-0 last:pb-0">
                         <div className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors mb-2 pr-4 leading-snug">
                           {faq.q}
