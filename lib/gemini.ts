@@ -1,10 +1,5 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Force load env before ANYTHING else
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 const apiKey = process.env.GOOGLE_API_KEY!;
 
