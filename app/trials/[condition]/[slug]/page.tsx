@@ -123,19 +123,20 @@ interface PageProps {
 
 export default async function TrialPage(props: PageProps) {
   unstable_noStore();
-  const params = await props.params;
-  const { condition, slug } = params;
-  const isState = isStateCode(slug);
+  try {
+    const params = await props.params;
+    const { condition, slug } = params;
+    const isState = isStateCode(slug);
 
-  const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
-  const pathSlug = `${condition}/${slug}`;
+    const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
+    const pathSlug = `${condition}/${slug}`;
 
-  // Fetch AI Content (Shared)
-  const { data: pageContent } = await supabase
-    .from("page_content")
-    .select("*")
-    .eq("path_slug", pathSlug)
-    .single();
+    // Fetch AI Content (Shared)
+    const { data: pageContent } = await supabase
+      .from("page_content")
+      .select("*")
+      .eq("path_slug", pathSlug)
+      .single();
 
   if (isState) {
     const stateName = slug.toUpperCase();
@@ -670,4 +671,14 @@ export default async function TrialPage(props: PageProps) {
       </section>
     </main>
   );
+  } catch (error: any) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'monospace', color: 'red', backgroundColor: 'black' }}>
+        <h2>Fatal Server Route Error</h2>
+        <pre style={{ whiteSpace: 'pre-wrap' }}>{error.message || String(error)}</pre>
+        <pre style={{ whiteSpace: 'pre-wrap' }}>{error.stack || ''}</pre>
+        <p>Params: {JSON.stringify(props.params)}</p>
+      </div>
+    );
+  }
 }
