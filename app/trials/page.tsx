@@ -26,7 +26,7 @@ const CONDITION_META: Record<string, { icon: any, color: string, name: string }>
 };
 
 interface PageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 // Phase 13: Standard async data fetch. Unstable cache breaks Cloudflare edge workers.
@@ -48,17 +48,16 @@ const getConditionStats = async () => {
 };
 
 export default async function TrialsDirectoryPage(props: PageProps) {
-  try {
-    const searchParams = await props.searchParams;
-    const locationQuery = typeof searchParams.location === 'string' ? searchParams.location : '';
+  const { searchParams } = props;
+  const locationQuery = typeof searchParams.location === 'string' ? searchParams.location : '';
 
-    // 1. Fetch Cached Counts from DB
-    const conditionStats = await getConditionStats();
+  // 1. Fetch Cached Counts from DB
+  const conditionStats = await getConditionStats();
 
-    // Filter out conditions with 0 trials to avoid empty pages
-    const activeConditions = conditionStats.filter((c: any) => c.count > 0).sort((a: any, b: any) => b.count - a.count);
+  // Filter out conditions with 0 trials to avoid empty pages
+  const activeConditions = conditionStats.filter((c: any) => c.count > 0).sort((a: any, b: any) => b.count - a.count);
 
-    return (
+  return (
     <main className="min-h-screen bg-gray-50 pb-20">
       {/* Breadcrumb Schema */}
       <Script id="breadcrumb-schema" type="application/ld+json">
@@ -187,16 +186,5 @@ export default async function TrialsDirectoryPage(props: PageProps) {
         </div>
       </section>
     </main>
-    );
-  } catch (err: any) {
-    return (
-      <div style={{ padding: '2rem', fontFamily: 'monospace', color: 'red' }}>
-        <h1>Edge Runtime Crash Analysis</h1>
-        <h2>Error Message:</h2>
-        <pre>{err?.message || String(err)}</pre>
-        <h2>Stack Trace:</h2>
-        <pre>{err?.stack || 'No stack trace available'}</pre>
-      </div>
-    );
-  }
+  );
 }

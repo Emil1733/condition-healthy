@@ -36,16 +36,15 @@ const getFullStateName = (abbr: string) => {
 };
 
 interface PageProps {
-  params: Promise<{
+  params: {
     condition: string;
     cityState: string;
-  }>;
+  };
 }
 
 // Elite SEO: Dynamic Metadata Generation
 export async function generateMetadata(props: PageProps) {
-  const params = await props.params;
-  const { condition, cityState: slug } = params;
+  const { condition, cityState: slug } = props.params;
   const isState = isStateCode(slug);
   
   if (isState) {
@@ -108,10 +107,7 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function TrialPage(props: PageProps) {
-  unstable_noStore();
-  
-  const params = await props.params;
-  const { condition, cityState: slug } = params;
+  const { condition, cityState: slug } = props.params;
   const isState = isStateCode(slug);
 
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);

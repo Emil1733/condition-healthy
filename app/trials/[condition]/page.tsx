@@ -25,18 +25,14 @@ const getStateAbbr = (stateName: string) => {
   return states[stateName.toLowerCase()] || stateName.toLowerCase();
 };
 
-// Phase 13: Edge Cache Optimization (24 hours)
-export const revalidate = 86400;
-
 interface PageProps {
-  params: Promise<{
+  params: {
     condition: string;
-  }>;
+  };
 }
 
 export async function generateMetadata(props: PageProps) {
-  const params = await props.params;
-  const { condition } = params;
+  const { condition } = props.params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   return {
@@ -49,9 +45,7 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function ConditionHubPage(props: PageProps) {
-  unstable_noStore();
-  const params = await props.params;
-  const { condition } = params;
+  const { condition } = props.params;
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1);
 
   // 1. Fetch cities that have trials for this condition
