@@ -33,8 +33,11 @@ const getStateName = (abbr: string) => {
 
 export async function generateMetadata(props: PageProps) {
   const { slug } = props.params;
-  const [condition, cityState] = slug.split("_");
-  if (!condition || !cityState) return { title: "Clinical Trial Hub" };
+  const parts = slug.split("_");
+  const condition = parts[0];
+  const cityState = parts[1];
+  
+  if (!condition || !cityState) return { title: "Research Hub" };
 
   const slugParts = cityState.split("-");
   const stateAbbr = slugParts.pop()?.toUpperCase() || "TX";
@@ -54,7 +57,10 @@ export default async function TrialCityPage(props: PageProps) {
   const { slug } = props.params;
   
   // 1. Parse Slug (e.g., migraine_wilmington-nc)
-  const [condition, cityState] = slug.split("_");
+  const parts = slug.split("_");
+  const condition = parts[0];
+  const cityState = parts[1];
+  
   if (!condition || !cityState) return notFound();
 
   const slugParts = cityState.split("-");
@@ -64,28 +70,27 @@ export default async function TrialCityPage(props: PageProps) {
   const formattedCondition = condition.charAt(0).toUpperCase() + condition.slice(1).replace(/-/g, " ");
 
   // 2. Fetch Trials for this City/Condition
-  let query = supabase
+  // Using a simplified query to ensure we find matches even if state naming is inconsistent (abbr vs full)
+  const { data: trials, error } = await supabase
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
-    .ilike("status", "recruiting");
-
-  if (city) {
-    query = query.ilike("location_city", city);
-  }
-  
-  // Use quotes for names with spaces to ensure Postgrest compatibility
-  const stateFilter = `location_state.ilike."${stateName}",location_state.ilike."${stateAbbr}"`;
-  query = query.or(stateFilter);
-
-  console.log(`Diagnostic: Fetching for City: ${city}, State: ${stateName}/${stateAbbr}`);
-  const { data: trials, error } = await query;
+    .ilike("location_city", city)
+    .ilike("status", "recruiting")
+    .limit(50); // Be generous
 
   if (error || !trials || trials.length === 0) {
+    // If exact city fails, attempt a broader check or return not found
     return notFound();
   }
 
-  const activeTrials = trials || [];
+  // Double check state if there are many matches (e.g. Springfield IL vs Springfield MO)
+  const filteredTrials = trials.filter(t => 
+    t.location_state?.toLowerCase() === stateName.toLowerCase() || 
+    t.location_state?.toLowerCase() === stateAbbr.toLowerCase()
+  );
+
+  const activeTrials = filteredTrials.length > 0 ? filteredTrials : trials;
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
