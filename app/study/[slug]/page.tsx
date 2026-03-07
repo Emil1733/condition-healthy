@@ -74,8 +74,11 @@ export default async function TrialCityPage(props: PageProps) {
     query = query.ilike("location_city", city);
   }
   
-  query = query.or(`location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`);
+  // Use quotes for names with spaces to ensure Postgrest compatibility
+  const stateFilter = `location_state.ilike."${stateName}",location_state.ilike."${stateAbbr}"`;
+  query = query.or(stateFilter);
 
+  console.log(`Diagnostic: Fetching for City: ${city}, State: ${stateName}/${stateAbbr}`);
   const { data: trials, error } = await query;
 
   if (error || !trials || trials.length === 0) {
