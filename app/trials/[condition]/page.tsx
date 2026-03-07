@@ -6,6 +6,8 @@ import Script from "next/script";
 import StudyCard from "@/components/StudyCard";
 import { SITE_CONFIG } from "@/lib/constants";
 
+export const runtime = "edge";
+
 // Phase 13: Edge Cache Optimization (24 hours)
 export const revalidate = 86400;
 

@@ -7,6 +7,8 @@ import Script from "next/script";
 import { supabase } from "@/lib/supabase.custom";
 import { unstable_cache } from "next/cache";
 
+export const runtime = "edge";
+
 export const metadata = {
   title: `Browse Clinical Trials by Medical Condition | ${SITE_CONFIG.brandingSuffix}`,
   description: `Access our complete directory of paid clinical trials. Browse high-paying research studies for over 20+ medical conditions across the United States via ${SITE_CONFIG.brandingSuffix}.`,
