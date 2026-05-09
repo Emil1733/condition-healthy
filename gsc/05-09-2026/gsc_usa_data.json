@@ -1,0 +1,268 @@
+{
+  "metadata": {
+    "startDate": "2026-05-02",
+    "endDate": "2026-05-08",
+    "siteUrl": "sc-domain:conditionhealthy.com",
+    "country": "USA"
+  },
+  "queries": [
+    {
+      "keys": [
+        "arthritis clinical trials columbus"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 22
+    },
+    {
+      "keys": [
+        "arthritis clinical trials irvine"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "chandler arizona migraine clinical research studies"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 14
+    },
+    {
+      "keys": [
+        "chronic migraine clinical trials"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "keys": [
+        "clinical trials for migraines"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 93
+    },
+    {
+      "keys": [
+        "migraine clinical trials"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 98
+    },
+    {
+      "keys": [
+        "migraine clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 93
+    },
+    {
+      "keys": [
+        "migraine medical trials"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 98
+    },
+    {
+      "keys": [
+        "osteoarthritis clinical trials irvine"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 11.666666666666666
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials carlsbad"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 25.5
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials san diego"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 18
+    }
+  ],
+  "pages": [
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/arthritis_columbus-oh"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 22
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/arthritis_irvine-ca"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 13.8
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/migraine_chandler-az"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 14
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 89.71428571428571
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/san-diego-ca"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 21.75
+    }
+  ],
+  "combined": [
+    {
+      "keys": [
+        "arthritis clinical trials columbus",
+        "https://www.conditionhealthy.com/study/arthritis_columbus-oh"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 22
+    },
+    {
+      "keys": [
+        "arthritis clinical trials irvine",
+        "https://www.conditionhealthy.com/study/arthritis_irvine-ca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "chandler arizona migraine clinical research studies",
+        "https://www.conditionhealthy.com/study/migraine_chandler-az"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 14
+    },
+    {
+      "keys": [
+        "chronic migraine clinical trials",
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "keys": [
+        "clinical trials for migraines",
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 93
+    },
+    {
+      "keys": [
+        "migraine clinical trials",
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 98
+    },
+    {
+      "keys": [
+        "migraine clinical trials near me",
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 93
+    },
+    {
+      "keys": [
+        "migraine medical trials",
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 98
+    },
+    {
+      "keys": [
+        "osteoarthritis clinical trials irvine",
+        "https://www.conditionhealthy.com/study/arthritis_irvine-ca"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 11.666666666666666
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials carlsbad",
+        "https://www.conditionhealthy.com/trials/psoriasis/san-diego-ca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 25.5
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials san diego",
+        "https://www.conditionhealthy.com/trials/psoriasis/san-diego-ca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 18
+    }
+  ]
+}
