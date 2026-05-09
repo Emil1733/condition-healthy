@@ -7,62 +7,88 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.baseUrl;
 
-  // 1. Fetch only pages that have pre-generated AI content (Grade A)
-  const { data: contents } = await supabaseAdmin
-    .from("page_content")
-    .select("path_slug")
-    .limit(5000);
+  // 1. Fetch all City/Condition Hubs (The "Thick" Pages)
+  let allContents: any[] = [];
+  let from = 0;
+  while (true) {
+    const { data } = await supabaseAdmin
+      .from("page_content")
+      .select("path_slug")
+      .range(from, from + 999);
+    if (!data || data.length === 0) break;
+    allContents = [...allContents, ...data];
+    if (data.length < 1000) break;
+    from += 1000;
+  }
+
+  // 2. Fetch Individual Clinical Trials (Long-tail Nodes)
+  let allStudies: any[] = [];
+  from = 0;
+  while (allStudies.length < 5000) { // Safety cap at 5k for sitemap performance
+    const { data } = await supabaseAdmin
+      .from("studies")
+      .select("nct_id")
+      .range(from, from + 999);
+    if (!data || data.length === 0) break;
+    allStudies = [...allStudies, ...data];
+    if (data.length < 1000) break;
+    from += 1000;
+  }
 
   const conditions = ["psoriasis", "diabetes", "migraine", "eczema", "arthritis"];
+  const today = new Date();
 
-  // 2. Generate Hub Pages (Authority Categorical Pages)
+  // Hub Pages (Categorical Priority: 0.95)
   const hubPages = conditions.map((cond) => ({
     url: `${baseUrl}/trials/${cond}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const, // Hubs change less frequently than listings
-    priority: 0.9,
+    lastModified: today,
+    changeFrequency: "daily" as const,
+    priority: 0.95,
   }));
 
-  // 3. Map Trial Pages (Grade A Content)
-  const trialPages = (contents || []).map((content: { path_slug: string }) => ({
-    url: `${baseUrl}/trials/${content.path_slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const, // Stratify crawl budget
-    priority: 0.7,
+  // City Guides (The "Thick" Authority Engine - Priority: 0.85)
+  const cityGuides = (allContents || []).map((content: { path_slug: string }) => ({
+    url: `${baseUrl}/study/${content.path_slug.replace("/", "_")}`,
+    lastModified: today,
+    changeFrequency: "daily" as const,
+    priority: 0.85,
+  }));
+
+  // Individual Study Nodes (Long-tail SEO - Priority: 0.6)
+  const studyNodes = (allStudies || []).map((study: { nct_id: string }) => ({
+    url: `${baseUrl}/study/${study.nct_id}`,
+    lastModified: today,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
   }));
 
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 1,
+      lastModified: today,
+      changeFrequency: "daily" as const,
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/trials`,
-      lastModified: new Date(),
+      lastModified: today,
       changeFrequency: "daily" as const,
-      priority: 0.8,
+      priority: 0.9,
     },
+    ...hubPages,
+    ...cityGuides,
+    ...studyNodes,
     {
       url: `${baseUrl}/editorial`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+      lastModified: today,
+      changeFrequency: "weekly" as const,
       priority: 0.5,
     },
     {
       url: `${baseUrl}/medical-review`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+      lastModified: today,
+      changeFrequency: "weekly" as const,
       priority: 0.5,
     },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.3,
-    },
-    ...hubPages,
-    ...trialPages,
   ];
 }
