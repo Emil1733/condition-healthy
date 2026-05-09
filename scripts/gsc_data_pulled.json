@@ -1,0 +1,759 @@
+{
+  "overall": {
+    "clicks": 3,
+    "impressions": 611,
+    "ctr": 0.004909983633387889,
+    "position": 16.312602291325696
+  },
+  "queries": [
+    {
+      "keys": [
+        "arthritis clinical trials columbus"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 8.75
+    },
+    {
+      "keys": [
+        "arthritis clinical trials irvine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 18
+    },
+    {
+      "keys": [
+        "arthritis clinical trials omaha"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "arthritis clinical trials raleigh"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7.333333333333333
+    },
+    {
+      "keys": [
+        "chandler arizona migraine clinical research studies"
+      ],
+      "clicks": 0,
+      "impressions": 27,
+      "ctr": 0,
+      "position": 7.592592592592593
+    },
+    {
+      "keys": [
+        "chronic migraine clinical trials"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 85.23076923076923
+    },
+    {
+      "keys": [
+        "clinical trials for migraines"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 88
+    },
+    {
+      "keys": [
+        "diabetes clinical trials chicago"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 28
+    },
+    {
+      "keys": [
+        "diabetes clinical trials houston"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 30.333333333333332
+    },
+    {
+      "keys": [
+        "diabetes clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 78.25
+    },
+    {
+      "keys": [
+        "diabetes clinical trials orlando"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 17.75
+    },
+    {
+      "keys": [
+        "diabetes treatment in houston tx"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 100
+    },
+    {
+      "keys": [
+        "diabetes type 2 clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "keys": [
+        "eczema clinical trials austin"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 42
+    },
+    {
+      "keys": [
+        "eczema clinical trials dallas"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "keys": [
+        "eczema treatment studies fort worth"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 18
+    },
+    {
+      "keys": [
+        "migraine clinical studies"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 81.33333333333333
+    },
+    {
+      "keys": [
+        "migraine clinical trial"
+      ],
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0,
+      "position": 84.42857142857143
+    },
+    {
+      "keys": [
+        "migraine clinical trials"
+      ],
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 80.125
+    },
+    {
+      "keys": [
+        "migraine clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 93
+    },
+    {
+      "keys": [
+        "migraine clinical trials paid"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 26
+    },
+    {
+      "keys": [
+        "migraine headache clinical trials"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 74.42857142857143
+    },
+    {
+      "keys": [
+        "migraine headaches clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 45
+    },
+    {
+      "keys": [
+        "migraine studies"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "keys": [
+        "migraine study"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 86.5
+    },
+    {
+      "keys": [
+        "migraine study near me"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "keys": [
+        "nct07024602 recruiting"
+      ],
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 8.125
+    },
+    {
+      "keys": [
+        "nct07216027"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 10.333333333333334
+    },
+    {
+      "keys": [
+        "osteoarthritis clinical trials irvine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 19
+    },
+    {
+      "keys": [
+        "prediabetes clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 54.5
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials chicago"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 11.714285714285714
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials las vegas"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 19
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials los angeles"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 13.333333333333334
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials new york"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials san antonio"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 12.5
+    },
+    {
+      "keys": [
+        "psoriasis clinical trials san diego"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 16.714285714285715
+    },
+    {
+      "keys": [
+        "rheumatoid arthritis clinical trials columbus ohio"
+      ],
+      "clicks": 0,
+      "impressions": 46,
+      "ctr": 0,
+      "position": 8.869565217391305
+    },
+    {
+      "keys": [
+        "vestibular migraine clinical trials near me"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 45
+    }
+  ],
+  "pages": [
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/greensboro-nc"
+      ],
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 1,
+      "position": 6
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/omaha-ne"
+      ],
+      "clicks": 1,
+      "impressions": 9,
+      "ctr": 0.1111111111111111,
+      "position": 5.888888888888889
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/new-york-ny"
+      ],
+      "clicks": 1,
+      "impressions": 5,
+      "ctr": 0.2,
+      "position": 3.4
+    },
+    {
+      "keys": [
+        "https://conditionhealthy.com/fact-checking"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/arthritis_irvine-ca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 18.5
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/diabetes_chicago-il"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 10.333333333333334
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/eczema_fort-worth-tx"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 30.4
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/study/psoriasis_las-vegas-nv"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 16
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 2.333333333333333
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/atlanta-ga"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 10.666666666666666
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/aurora-co"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 13
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/columbus-oh"
+      ],
+      "clicks": 0,
+      "impressions": 188,
+      "ctr": 0,
+      "position": 5.446808510638298
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/raleigh-nc"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 8.454545454545453
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/arthritis/st.-petersburg-fl"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/austin-tx"
+      ],
+      "clicks": 0,
+      "impressions": 37,
+      "ctr": 0,
+      "position": 9.216216216216216
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/bakersfield-ca"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 5.1
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/baton-rouge-la"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/cincinnati-oh"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 5.153846153846154
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/houston-tx"
+      ],
+      "clicks": 0,
+      "impressions": 24,
+      "ctr": 0,
+      "position": 28.583333333333332
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/minneapolis-mn"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/diabetes/orlando-fl"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 16.77777777777778
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/eczema"
+      ],
+      "clicks": 0,
+      "impressions": 19,
+      "ctr": 0,
+      "position": 6.7894736842105265
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/eczema/chandler-az"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 5.444444444444445
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/eczema/scottsdale-az"
+      ],
+      "clicks": 0,
+      "impressions": 33,
+      "ctr": 0,
+      "position": 5.2727272727272725
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine"
+      ],
+      "clicks": 0,
+      "impressions": 90,
+      "ctr": 0,
+      "position": 60.955555555555556
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/chandler-az"
+      ],
+      "clicks": 0,
+      "impressions": 34,
+      "ctr": 0,
+      "position": 12.794117647058824
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/kansas-city-mo"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 8.75
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/lexington-fayette-ky"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/minneapolis-mn"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4.5
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/phoenix-az"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/st.-louis-mo"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/migraine/tampa-fl"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/boise-city-id"
+      ],
+      "clicks": 0,
+      "impressions": 41,
+      "ctr": 0,
+      "position": 8.073170731707318
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/chicago-il"
+      ],
+      "clicks": 0,
+      "impressions": 18,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/dallas-tx"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 8.166666666666668
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/durham-nc"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/kansas-city-mo"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/los-angeles-ca"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 10.25
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/memphis-tn"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 4
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/new-york-ny"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/omaha-ne"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/san-antonio-tx"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 11.538461538461538
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/san-diego-ca"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 14.9
+    },
+    {
+      "keys": [
+        "https://www.conditionhealthy.com/trials/psoriasis/santa-ana-ca"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 7.2
+    }
+  ]
+}

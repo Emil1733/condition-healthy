@@ -50,7 +50,7 @@ export default function Home() {
          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Direct Links to our pSEO engine hubs */}
             <div className="space-y-4">
-              <Link href="/trials/psoriasis/austin-tx" className="group block">
+              <Link href="/study/psoriasis_austin-tx" className="group block">
                   <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
                       <div className="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-100">
                           <Activity className="text-blue-600 w-6 h-6" aria-hidden="true" />
@@ -65,7 +65,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <Link href="/trials/diabetes/houston-tx" className="group block">
+              <Link href="/study/diabetes_houston-tx" className="group block">
                   <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
                       <div className="bg-green-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-100">
                           <Activity className="text-green-600 w-6 h-6" aria-hidden="true" />
@@ -80,7 +80,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <Link href="/trials/migraine/dallas-tx" className="group block">
+              <Link href="/study/migraine_dallas-tx" className="group block">
                   <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group-hover:border-blue-200">
                       <div className="bg-purple-50 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-100">
                           <Activity className="text-purple-600 w-6 h-6" aria-hidden="true" />

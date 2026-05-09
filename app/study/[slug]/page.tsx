@@ -1,14 +1,22 @@
+
 import { supabase } from "@/lib/supabase.custom";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import {
-  Activity,
-  MapPin,
-  ChevronRight,
-  ShieldCheck,
-  Info,
+import Image from "next/image";
+import { 
+  Activity, 
+  MapPin, 
+  ChevronRight, 
+  ShieldCheck, 
+  Hospital, 
+  Stethoscope, 
+  Globe,
+  FileText,
+  Clock,
+  ArrowRight
 } from "lucide-react";
-import StudyCard from "@/components/StudyCard";
+import StudyTabs from "@/components/StudyTabs";
+import RelatedHubs from "@/components/RelatedHubs";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +46,6 @@ const STATE_MAP: Record<string, string> = {
 };
 
 function parseSlug(slug: string) {
-  // Expected formats: "eczema_md" or "eczema_bethesda-md"
   const underscoreIdx = slug.indexOf("_");
   if (underscoreIdx === -1) return null;
 
@@ -63,7 +70,7 @@ export async function generateMetadata(props: PageProps) {
   const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
   return {
     title: `${formattedCondition} Clinical Trials in ${locationTitle} | ${SITE_CONFIG.brandingSuffix}`,
-    description: `Find active ${formattedCondition} studies in ${locationTitle}. View eligibility, pay rates, and connect with top research facilities near you.`,
+    description: `Access high-authority ${formattedCondition} research in ${locationTitle}. Connect with top hospitals and receive compensation for your participation.`,
     alternates: { canonical: `${SITE_CONFIG.baseUrl}/study/${props.params.slug}` },
   };
 }
@@ -75,158 +82,105 @@ export default async function TrialCityPage(props: PageProps) {
   if (!parsed) return notFound();
 
   const { condition, city, stateAbbr, stateName, formattedCondition } = parsed;
+  const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
 
-  // Build query
+  // 1. Fetch "Thick" Content
+  const { data: pageContent } = await supabase
+    .from("page_content")
+    .select("*")
+    .eq("path_slug", slug.replace("_", "/"))
+    .single();
+
+  // 2. Fetch Trials
   let query = supabase
     .from("studies")
     .select("*")
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
-    .ilike("status", "recruiting");
+    .ilike("status", "recruiting")
+    .or(`location_city.ilike.${city},location_city.ilike.${city.replace(/ /g, '-')}`);
 
-  // City filter only when a city is present
-  if (city.trim()) {
-    query = query.ilike("location_city", city);
-  }
-
-  // State filter — match by full name OR abbreviation
-  query = query.or(
-    `location_state.ilike.${stateName},location_state.ilike.${stateAbbr}`
-  );
-
-  const { data: trials } = await query.limit(50);
+  const { data: trials } = await query.limit(40);
   const activeTrials = trials ?? [];
 
-  const locationTitle = city ? `${city}, ${stateAbbr}` : stateName;
-
   return (
-    <main className="min-h-screen bg-gray-50 pb-20">
-      {/* Hero Section */}
-      <section className="bg-white border-b border-gray-200 pt-8 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link href="/trials" className="hover:text-blue-600 transition-colors">All Trials</Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link href={`/trials/${condition}`} className="hover:text-blue-600 transition-colors">
-              {formattedCondition}
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-gray-900 font-medium">{locationTitle}</span>
+    <main className="min-h-screen bg-gray-50/30 font-sans">
+      {/* Elite Dashboard Hero */}
+      <section className="bg-white border-b border-gray-100 relative overflow-hidden pt-12 pb-24">
+        <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
+          <Image 
+            src="/medical_hero.png" 
+            alt="Clinical Research Hub"
+            fill
+            className="object-cover opacity-40 object-right-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <nav className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-10 overflow-x-auto no-scrollbar whitespace-nowrap">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Portal</Link>
+            <ChevronRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
+            <Link href="/trials" className="hover:text-blue-600 transition-colors">Directory</Link>
+            <ChevronRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
+            <span className="text-blue-700">{city || stateName} {condition}</span>
           </nav>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold mb-4">
-                <MapPin className="w-3 h-3" />
-                Local Research Hub
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
-                {formattedCondition} Trials in{" "}
-                <span className="text-blue-600">{locationTitle}</span>
-              </h1>
-              <p className="mt-4 text-gray-500 max-w-2xl leading-relaxed">
-                {activeTrials.length > 0
-                  ? `Currently tracking ${activeTrials.length} active clinical research ${activeTrials.length === 1 ? "study" : "studies"} in the ${locationTitle} area. Participants may receive compensations for time and travel.`
-                  : `No active clinical trials found in ${locationTitle} at this time. Check back soon or explore nearby areas.`}
-              </p>
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-blue-100">
+               <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+               Live Research Database
             </div>
-            <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-              <div className="text-center px-4 border-r border-gray-200">
-                <div className="text-2xl font-black text-gray-900">{activeTrials.length}</div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active</div>
-              </div>
-              <div className="text-center px-4">
-                <div className="text-2xl font-black text-blue-600">Free</div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Medical Care</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-          {/* Trials Grid */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2 mb-6">
-              <Activity className="w-5 h-5 text-blue-600" />
-              Available {formattedCondition} Studies
-            </h2>
-
-            {activeTrials.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
-                <Activity className="w-10 h-10 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg font-semibold">No active trials at this time</p>
-                <p className="text-gray-400 text-sm mt-2">Try searching in a nearby city or state.</p>
-                <Link href={`/trials/${condition}`} className="mt-6 inline-block text-blue-600 font-bold hover:underline">
-                  View all {formattedCondition} trials →
-                </Link>
-              </div>
-            ) : (
-              activeTrials.map((study) => (
-                <StudyCard
-                  key={study.nct_id}
-                  nctId={study.nct_id}
-                  title={study.title}
-                  status={study.status}
-                  condition={study.condition}
-                  city={study.location_city}
-                  state={study.location_state}
-                  showLocation={false}
-                />
-              ))
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-8 self-start lg:sticky lg:top-24">
-            <div className="bg-blue-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <ShieldCheck className="w-24 h-24" />
-              </div>
-              <h3 className="text-xl font-bold mb-4 relative z-10">How it works</h3>
-              <ul className="space-y-4 relative z-10">
-                {["Select a study that matches your condition and location.", 'Review the eligibility requirements and click "View Full Details".', "Contact the research site directly to start your screening."].map((step, i) => (
-                  <li key={i} className="flex gap-3">
-                    <div className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">{i + 1}</div>
-                    <p className="text-sm text-blue-100 italic">{step}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Info className="w-5 h-5 text-gray-400" />
-                Patient Compensation
-              </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Most clinical trials in {locationTitle} provide compensation for time and travel, often ranging from{" "}
-                <strong>$500 to $3,000</strong> per study. Additionally, participants receive study-related medical care and medications at no cost.
-              </p>
+            <h1 className="text-4xl md:text-7xl font-black text-gray-900 leading-[1.05] tracking-tight mb-8">
+              {formattedCondition} <br/>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">Hub: {locationTitle}</span>
+            </h1>
+            <p className="text-xl text-gray-500 leading-relaxed max-w-2xl font-medium">
+              Connecting patients in {city} with breakthrough clinical trials, specialized care, and study-related compensation.
+            </p>
+            
+            <div className="mt-10 flex flex-wrap gap-4 items-center">
+               <div className="flex -space-x-3">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center overflow-hidden">
+                       <Image src={`https://i.pravatar.cc/100?u=${i + 10}`} alt="User" width={40} height={40} />
+                    </div>
+                  ))}
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">+4k</div>
+               </div>
+               <div className="text-[11px] md:text-sm font-bold text-gray-400 uppercase tracking-wider">
+                  Join 4,200+ participants tracking trials in {stateName}
+               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <div className="bg-gray-100 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-200/50">
-          <div className="flex items-center gap-4 text-gray-600">
-            <ShieldCheck className="w-8 h-8 text-orange-400" />
-            <div>
-              <div className="font-bold text-gray-900 uppercase tracking-widest text-[10px]">Security Verified</div>
-              <div className="text-sm">All trials follow strict FDA-compliant safety protocols.</div>
+      {/* The Dashboard Core (Tabs + Dynamic Content) */}
+      <StudyTabs 
+        activeTrials={activeTrials} 
+        pageContent={pageContent}
+        locationTitle={locationTitle}
+        condition={formattedCondition}
+        stateName={stateName}
+        city={city}
+      />
+
+      <RelatedHubs 
+        currentCity={city}
+        currentState={stateName}
+        currentCondition={formattedCondition}
+      />
+
+      {/* Standalone Authority Strip */}
+      <section className="bg-white border-t border-gray-50 py-16">
+         <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-20 grayscale hover:opacity-40 transition-opacity duration-500">
+               <span className="text-xl font-black italic tracking-tighter">ClinicalTrials.gov</span>
+               <span className="text-xl font-black italic tracking-tighter">FDA REGISTERED</span>
+               <span className="text-xl font-black italic tracking-tighter">IRB OVERSIGHT</span>
+               <span className="text-xl font-black italic tracking-tighter">HIPAA COMPLIANT</span>
             </div>
-          </div>
-          <div className="flex items-center gap-8 opacity-40 grayscale filter">
-            <span className="text-[10px] font-black tracking-widest">NIH DATA</span>
-            <span className="text-[10px] font-black tracking-widest">IRB APPROVED</span>
-            <span className="text-[10px] font-black tracking-widest">HIPAA COMPLIANT</span>
-          </div>
-        </div>
+         </div>
       </section>
     </main>
   );

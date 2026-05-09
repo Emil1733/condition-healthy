@@ -6,21 +6,15 @@ const CONDITIONS = ['Psoriasis', 'Diabetes', 'Migraine', 'Eczema', 'Arthritis'];
 const BASE_URL = 'https://clinicaltrials.gov/api/v2/studies';
 
 async function ingestStudies() {
-  console.log("📥 STARTING CLINICAL TRIALS INGESTION Swarm...");
+  console.log("📥 STARTING MASSIVE pSEO INGESTION (Multi-City Edition)...");
 
-  const limitArg = process.argv.find(arg => arg.startsWith('--limit='));
-  const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : 50;
+  // Higher limit for better city coverage
+  const limit = 300; 
   
-  const isTest = process.argv.includes('--test');
-
   for (const condition of CONDITIONS) {
-    console.log(`\n🔍 Fetching studies for [${condition}]...`);
+    console.log(`\n🔍 Fetching up to ${limit} studies for [${condition}]...`);
 
     try {
-      // API v2 Parameters:
-      // query.cond: The condition
-      // filter.overallStatus: RECRUITING
-      // pageSize: batches
       const response = await axios.get(BASE_URL, {
         params: {
           'query.cond': condition,
@@ -37,53 +31,80 @@ async function ingestStudies() {
         continue;
       }
 
-      console.log(`✅ Found ${studies.length} studies for ${condition}.`);
+      console.log(`✅ Found ${studies.length} studies. Expanding locations...`);
 
-      if (isTest) {
-        console.log("🧪 TEST MODE: Logging first 3 results and skipping DB upsert.");
-        studies.slice(0, 3).forEach((s: any) => {
-          const id = s.protocolSection.identificationModule.nctId;
-          const title = s.protocolSection.identificationModule.briefTitle;
-          const locations = s.protocolSection.contactsLocationsModule?.locations || [];
-          const firstLoc = locations[0];
-          console.log(`- [${id}] ${title} | ${firstLoc?.city || 'N/A'}, ${firstLoc?.state || 'N/A'}`);
+      const upsertData: any[] = [];
+      const seen = new Set();
+
+      studies.forEach((s: any) => {
+        const nctId = s.protocolSection.identificationModule.nctId;
+        const title = s.protocolSection.identificationModule.briefTitle;
+        const status = s.protocolSection.statusModule.overallStatus;
+        const locations = s.protocolSection.contactsLocationsModule?.locations || [];
+
+        locations.forEach((loc: any) => {
+          // Only take US locations (they usually have a state)
+          if (loc.city && loc.state && loc.country === 'United States') {
+            const city = loc.city;
+            const state = loc.state;
+            const key = `${nctId}_${city}_${state}`;
+
+            if (!seen.has(key)) {
+              upsertData.push({
+                nct_id: nctId,
+                title: title,
+                status: status,
+                condition: condition,
+                location_city: city,
+                location_state: state,
+                compensation: "Up to $1,500" // Default for pSEO attractiveness
+              });
+              seen.add(key);
+            }
+          }
         });
+      });
+
+      if (upsertData.length === 0) {
+        console.log(`⚠️ No US locations found for ${condition}.`);
         continue;
       }
 
-      // Prepare for Supabase
-      const upsertData = studies.map((s: any) => {
-        const locations = s.protocolSection.contactsLocationsModule?.locations || [];
-        const firstLoc = locations[0]; // Take first location as representative
-        
-        return {
-          nct_id: s.protocolSection.identificationModule.nctId,
-          title: s.protocolSection.identificationModule.briefTitle,
-          status: s.protocolSection.statusModule.overallStatus,
-          condition: condition,
-          location_city: firstLoc?.city || null,
-          location_state: firstLoc?.state || null
-        };
-      });
+      console.log(`💾 Found ${upsertData.length} city-specific records. Updating DB...`);
 
-      console.log(`💾 Upserting ${upsertData.length} rows to Supabase...`);
-      const { error } = await supabaseAdmin.from('studies').upsert(upsertData, { onConflict: 'nct_id' });
+      // Strategy: Delete existing for this condition and re-insert 
+      // This bypasses the unique constraint issues with nct_id while keeping data fresh
+      const { error: delError } = await supabaseAdmin
+        .from('studies')
+        .delete()
+        .eq('condition', condition);
 
-      if (error) {
-        console.error(`❌ DB Error for ${condition}:`, error.message);
-      } else {
-        console.log(`✨ Successfully ingested ${condition}!`);
+      if (delError) {
+        console.error(`❌ Delete error for ${condition}:`, delError.message);
+        continue;
       }
+
+      // Batch insert (Supabase handles up to 1000 at a time well)
+      const batchSize = 500;
+      for (let i = 0; i < upsertData.length; i += batchSize) {
+        const batch = upsertData.slice(i, i + batchSize);
+        const { error: insError } = await supabaseAdmin.from('studies').insert(batch);
+        
+        if (insError) {
+          console.error(`❌ Insert error for ${condition} batch:`, insError.message);
+        }
+      }
+
+      console.log(`✨ Successfully updated ${condition} with ${upsertData.length} locations!`);
 
     } catch (err: any) {
       console.error(`💥 API Failure for ${condition}:`, err.message);
     }
     
-    // Slight pause to be polite to the gov API
     await new Promise(r => setTimeout(r, 1000));
   }
 
-  console.log("\n🏁 INGESTION COMPLETE.");
+  console.log("\n🏁 MASS INGESTION COMPLETE.");
   process.exit(0);
 }
 

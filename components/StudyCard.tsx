@@ -30,9 +30,9 @@ export default function StudyCard({
       <div>
         <div className="flex justify-between items-start gap-4 mb-3">
           <div className="text-xs font-bold text-blue-600 uppercase tracking-wider flex items-center gap-2">
-            {nctId}
+            {nctId.split('_')[0]}
             <a 
-              href={`https://clinicaltrials.gov/study/${nctId}`} 
+              href={`https://clinicaltrials.gov/study/${nctId.split('_')[0]}`} 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[10px] text-gray-400 hover:text-blue-500 underline lowercase"

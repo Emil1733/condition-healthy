@@ -56,18 +56,20 @@ export default function QuizModal({ isOpen, onClose, condition, city }: QuizModa
   const questions = [
     {
       id: "location",
-      text: "Do you currently live in the United States?",
+      text: "Are you currently a resident of the United States?",
       options: ["Yes", "No"],
     },
     {
       id: "age",
-      text: "Are you between the ages of 18 and 65?",
+      text: "Are you 18 years of age or older?",
       options: ["Yes", "No"],
     },
     {
       id: "diagnosis",
-      text: `Have you been diagnosed with ${condition}?`,
-      options: ["Yes", "No", "Not sure"],
+      text: condition && condition !== "Clinical Trial" 
+        ? `Have you ever been diagnosed with ${condition}?`
+        : "Have you been diagnosed with the condition mentioned in this study?",
+      options: ["Yes", "No", "I'm not sure"],
     },
   ];
 
@@ -145,8 +147,8 @@ export default function QuizModal({ isOpen, onClose, condition, city }: QuizModa
                       <Check className="w-8 h-8 text-green-600" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Great News!</h2>
-                    <p className="text-gray-600 mb-8">
-                      You qualify for the <b>{condition}</b> study in <b>{city}</b>. Enter your email to see the clinic details.
+                    <p className="text-gray-600 mb-8 leading-relaxed">
+                      You qualify for the <b>{condition}</b> research study {city && city !== "Your Area" ? `in ${city}` : "near you"}. Enter your email to access the study details and compensation info.
                     </p>
                     <input
                       type="email"

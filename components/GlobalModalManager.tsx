@@ -9,14 +9,31 @@ export default function GlobalModalManager() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Deduce context from URL if possible
-  // e.g. /trials/psoriasis/austin-tx -> condition=psoriasis, city=austin-tx
-  // This is a naive extraction for the "global" modal if triggered from generic pages
+  // Deduce context from URL
+  // Legacy: /trials/[condition]/[city-state]
+  // New: /study/[condition]_[city-state]
   const pathParts = pathname?.split('/').filter(Boolean) || [];
-  const condition = pathParts[1] || "Clinical Trial"; 
-  const citySlug = pathParts[2] || "your area";
+  const routeType = pathParts[0]; // "trials" or "study"
   
-  const city = citySlug.replace(/-/g, ' ');
+  let rawCondition = "Clinical Trial";
+  let rawCity = "your area";
+
+  if (routeType === "trials") {
+    rawCondition = pathParts[1] || rawCondition;
+    rawCity = (pathParts[2] || rawCity).replace(/-/g, ' ');
+  } else if (routeType === "study") {
+    const slug = pathParts[1] || "";
+    const underscoreIdx = slug.indexOf("_");
+    if (underscoreIdx !== -1) {
+      rawCondition = slug.slice(0, underscoreIdx);
+      rawCity = slug.slice(underscoreIdx + 1).replace(/-/g, ' ');
+    } else {
+      rawCondition = slug || rawCondition;
+    }
+  }
+
+  const condition = rawCondition.charAt(0).toUpperCase() + rawCondition.slice(1).replace(/-/g, ' ');
+  const city = rawCity.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -35,8 +52,8 @@ export default function GlobalModalManager() {
     <QuizModal 
       isOpen={isOpen} 
       onClose={() => setIsOpen(false)} 
-      condition={condition.charAt(0).toUpperCase() + condition.slice(1)}
-      city={city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+      condition={condition}
+      city={city}
     />
   );
 }
