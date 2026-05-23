@@ -21,20 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     from += 1000;
   }
 
-  // 2. Fetch Individual Clinical Trials (Long-tail Nodes)
-  let allStudies: any[] = [];
-  from = 0;
-  while (allStudies.length < 5000) { // Safety cap at 5k for sitemap performance
-    const { data } = await supabaseAdmin
-      .from("studies")
-      .select("nct_id")
-      .range(from, from + 999);
-    if (!data || data.length === 0) break;
-    allStudies = [...allStudies, ...data];
-    if (data.length < 1000) break;
-    from += 1000;
-  }
-
   const conditions = ["psoriasis", "diabetes", "migraine", "eczema", "arthritis"];
   const today = new Date();
 
@@ -54,14 +40,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  // Individual Study Nodes (Long-tail SEO - Priority: 0.6)
-  const studyNodes = (allStudies || []).map((study: { nct_id: string }) => ({
-    url: `${baseUrl}/study/${study.nct_id}`,
-    lastModified: today,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
-
   return [
     {
       url: baseUrl,
@@ -77,7 +55,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...hubPages,
     ...cityGuides,
-    ...studyNodes,
     {
       url: `${baseUrl}/editorial`,
       lastModified: today,

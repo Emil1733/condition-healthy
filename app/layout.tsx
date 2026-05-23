@@ -25,6 +25,18 @@ export const metadata: Metadata = {
   verification: {
     google: "fwaLfQ5e7EPKJWcsStsdpSev9YQhWPmqwUDyKQg8EvM",
   },
+  openGraph: {
+    title: "ConditionHealthy.com | Clinical Trial Finder",
+    description: "Find high-paying clinical research studies and advanced treatment options near you.",
+    images: [
+      {
+        url: "/medical_hero.png",
+        width: 1200,
+        height: 630,
+        alt: "Condition Healthy - Clinical Trial Finder",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
