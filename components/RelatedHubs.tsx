@@ -16,9 +16,9 @@ export default async function RelatedHubs({ currentCity, currentState, currentCo
       const { data: stateHubs } = await supabaseAdmin
         .from("page_content")
         .select("path_slug, city_slug")
-        .ilike("path_slug", `%/${currentCondition.toLowerCase().replace(/ /g, "-")}%`)
+        .ilike("condition", currentCondition)
         .ilike("path_slug", `%-${currentState.toLowerCase()}`)
-        .limit(10);
+        .limit(16);
 
       if (!stateHubs || stateHubs.length === 0) return null;
 
@@ -68,10 +68,10 @@ export default async function RelatedHubs({ currentCity, currentState, currentCo
     const { data: statePeers } = await supabaseAdmin
       .from("page_content")
       .select("path_slug, city_slug")
-      .ilike("path_slug", `%/${currentCondition.toLowerCase().replace(/ /g, "-")}%`)
+      .ilike("condition", currentCondition)
       .ilike("path_slug", `%-${currentState.toLowerCase()}`)
       .neq("city_slug", citySlug)
-      .limit(6);
+      .limit(12);
 
     if ((!localPeers || localPeers.length === 0) && (!statePeers || statePeers.length === 0)) {
       return null; // Graceful exit if no peers found
