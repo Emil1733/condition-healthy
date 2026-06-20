@@ -118,12 +118,97 @@ export default async function TrialCityPage(props: PageProps) {
     .ilike("condition", `%${condition.replace(/-/g, " ")}%`)
     .ilike("status", "recruiting")
     .or(`location_city.ilike.${city},location_city.ilike.${city.replace(/ /g, '-')}`);
-
   const { data: trials } = await query.limit(40);
   const activeTrials = trials ?? [];
 
+  // 1. Dataset Schema (Metadata of trials dataset)
+  const datasetSchema = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": `${formattedCondition} Clinical Trials in ${locationTitle}`,
+    "description": `Comprehensive directory of active, recruiting ${formattedCondition} clinical trials and medical research studies in ${locationTitle}. View compensation, eligibility, and facility locations.`,
+    "url": `${SITE_CONFIG.baseUrl}/study/${slug}`,
+    "creator": {
+      "@type": "Organization",
+      "name": SITE_CONFIG.siteName || "Condition Healthy",
+      "url": SITE_CONFIG.baseUrl
+    },
+    "hasPart": activeTrials.map((trial: any) => ({
+      "@type": "MedicalTrial",
+      "name": trial.title,
+      "sponsor": trial.sponsor || SITE_CONFIG.siteName || "Condition Healthy",
+      "status": "Active",
+      "studySubject": {
+        "@type": "MedicalCondition",
+        "name": trial.condition
+      }
+    }))
+  };
+
+  // 2. Local Business / Hospital Schema (Local clinics list)
+  const facilitiesList = pageContent?.local_facilities;
+  const localBusinesses = Array.isArray(facilitiesList) ? facilitiesList.map((fac: any, index: number) => {
+    const facName = typeof fac === 'string' ? fac : fac.name || '';
+    const facType = typeof fac === 'string' ? 'MedicalClinic' : (fac.type?.toLowerCase().includes('hospital') ? 'Hospital' : 'MedicalClinic');
+    return {
+      "@context": "https://schema.org",
+      "@type": facType,
+      "@id": `${SITE_CONFIG.baseUrl}/study/${slug}#facility-${index}`,
+      "name": facName,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": city,
+        "addressRegion": stateAbbr,
+        "addressCountry": "US"
+      }
+    };
+  }) : [];
+
+  // 3. Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Portal",
+        "item": SITE_CONFIG.baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Directory",
+        "item": `${SITE_CONFIG.baseUrl}/trials`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": `${formattedCondition} Trials in ${locationTitle}`,
+        "item": `${SITE_CONFIG.baseUrl}/study/${slug}`
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen bg-gray-50/30 font-sans">
+      {/* Structured Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {localBusinesses.map((biz: any, idx: number) => (
+        <script
+          key={idx}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(biz) }}
+        />
+      ))}
+
       {/* Elite Dashboard Hero */}
       <section className="bg-white border-b border-gray-100 relative overflow-hidden pt-12 pb-24">
         <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
